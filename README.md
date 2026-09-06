@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. Both `gui.py` and `cli.py`
 > require you to confirm this before they'll start.
 
-**Version 3.9.17** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 3.10.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 A haptic controller that links your keyboard/mouse input to a Buttplug/Intiface
 toy. Originally Minecraft-only, it now supports multiple game **profiles**,
@@ -18,7 +18,8 @@ driven from an interactive GUI. As much as I hate to say it this was made
 with grok, chat gpt, and some claude. (I wish I was better at coding)
 
 Website: https://tighc.stuxie.dev  
-Repository: https://github.com/TIGHC/Engine
+Repository: https://github.com/TIGHC/Engine  
+License: [GPL-3.0-or-later](LICENSE.md)
 
 ## Author
 
@@ -30,6 +31,16 @@ Repository: https://github.com/TIGHC/Engine
 <br>
 
 ## Quick start
+
+Prefer not to install Python at all? Grab a standalone executable from the
+**[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
+`TIGHC-gui-windows-vX.Y.Z.exe` / `TIGHC-gui-linux-vX.Y.Z` for the GUI, or the
+`TIGHC-cli-...` build for the headless CLI. These are built automatically by
+CI from this same source (see `.github/workflows/ci.yml` and the
+`tighc-gui.spec`/`tighc-cli.spec` PyInstaller specs) - no separate download
+needed.
+
+Running from source instead:
 
 ```
 git clone https://github.com/TIGHC/Engine.git
@@ -57,9 +68,10 @@ the full setup walkthrough (switching sessions, installing dependencies,
 getting Intiface Central running, troubleshooting). Everything else in this
 README - profiles, the GUI, cover art - applies identically on Linux.
 
-A pre-compiled executable (Linux and Windows) that could enable Steam Deck
-**Game Mode** support is in the works - see LINUX_GUIDE.md's note on this;
-it's a roadmap item, not something available yet.
+Standalone Linux and Windows executables are built automatically for every
+tagged release (see [Quick start](#quick-start) above) - actual Steam Deck
+**Game Mode** support (as opposed to Desktop Mode, which already works
+today) is still a roadmap item; see LINUX_GUIDE.md's note on this.
 
 ## How it's organized
 
@@ -79,6 +91,10 @@ src/
 cli.py                            # headless CLI entry point (imports src/tighc.py)
 gui.py                            # interactive configurator + launcher (also imports src/tighc.py)
 assets/                           # icon.png/icon.ico (window icon) and logo.png (About tab banner)
+tests/                            # pytest suite - see "Development" below
+tighc-gui.spec, tighc-cli.spec    # PyInstaller build specs (see "Development" below)
+pyproject.toml                    # project metadata/dependencies + pytest config
+.github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
 %APPDATA%\TIGHC\  (or ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
   profiles/                       # downloaded from TIGHC-Profiles on GitHub on first launch
   configs/
@@ -235,6 +251,23 @@ place that changes it) alongside **Connect + Scan**, **Rescan**, and
 **Disconnect** buttons, and the top bar always shows the current connection
 state ("Not connected" / "Connecting..." / "Connected - N channel(s)") no
 matter which tab you're on.
+
+## Development: tests and building executables
+
+```
+pip install -r requirements.txt
+pip install pytest pyinstaller
+pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
+                                     # devices, haptics config, paths); no GUI/network/hardware
+pyinstaller tighc-gui.spec          # -> dist/TIGHC(.exe)
+pyinstaller tighc-cli.spec          # -> dist/TIGHC-CLI(.exe)
+```
+
+The test suite never touches your real `%APPDATA%\TIGHC` (or
+`~/.local/share/TIGHC`) - `tests/conftest.py` redirects it to a throwaway
+temp directory before anything under `src/` is imported, so running `pytest`
+is always safe on a machine that already has TIGHC configured. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for what's expected of a pull request.
 
 ## About, versioning, and contact
 

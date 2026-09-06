@@ -1,17 +1,19 @@
 """TIGHC's version - single source of truth, read by the engine's startup
 banner, cli.py, and gui.py's About tab.
 
-The version number lives in VERSION.md at the repo root so it can be read
-by both Python (here) and external tools (the website, CI, etc.) without
-importing the package. Versioning follows Semantic Versioning (semver.org):
-MAJOR.MINOR.PATCH, where MAJOR bumps mark breaking config-format/behavior
-changes, MINOR marks backward-compatible feature additions, and PATCH marks
-fixes. Bump VERSION.md and add a matching entry to CHANGELOG.md together.
+The version number lives in VERSION.md alongside src.paths.APP_ROOT (the
+repo root when running from source, or a PyInstaller executable's bundled
+resources - see src/paths.py) so it can be read by both Python (here) and
+external tools (the website, CI, etc.) without importing the package.
+Versioning follows Semantic Versioning (semver.org): MAJOR.MINOR.PATCH,
+where MAJOR bumps mark breaking config-format/behavior changes, MINOR marks
+backward-compatible feature additions, and PATCH marks fixes. Bump
+VERSION.md and add a matching entry to CHANGELOG.md together.
 """
 
-from pathlib import Path
+from src.paths import APP_ROOT
 
-__version__ = (Path(__file__).parent.parent / "VERSION.md").read_text(encoding="utf-8").strip()
+__version__ = (APP_ROOT / "VERSION.md").read_text(encoding="utf-8").strip()
 
 
 def get_version() -> str:

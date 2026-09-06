@@ -15,9 +15,20 @@ from the TIGHC-Profiles GitHub repo and seeds them into the user profiles dir.
 """
 
 import os
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# Base directory for read-only, ship-with-the-app resources (VERSION.md,
+# CHANGELOG.md, assets/) - as opposed to USER_DATA_DIR below, which is
+# read/write per-user state. Running from source, this is the repo root;
+# frozen into a PyInstaller executable, `__file__`-relative lookups no
+# longer point at real files (everything's packed into the bundle), so this
+# falls back to `sys._MEIPASS`, the temp/onedir path PyInstaller extracts
+# `--add-data` resources into. Both cases are set up so the same relative
+# layout (VERSION.md, CHANGELOG.md, assets/ at the root) resolves correctly.
+APP_ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else REPO_ROOT
 
 # Platform-standard per-user app directory.
 if os.name == "nt":

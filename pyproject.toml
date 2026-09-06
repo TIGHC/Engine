@@ -1,0 +1,50 @@
+[build-system]
+# >=70 for PEP 639 SPDX `license = "..."` string support (see [project] below).
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tighc"
+description = "The Intiface Game Haptics Controller (TIGHC) - links keyboard/mouse input to a Buttplug/Intiface haptic device while gaming."
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE.md"]
+requires-python = ">=3.10"
+authors = [{ name = "StuxieDev" }]
+dynamic = ["version"]
+dependencies = [
+    "buttplug",
+    "pynput",
+    "sv_ttk",
+    "python-xlib; sys_platform == 'linux'",
+]
+
+# This project is run from a clone (`python gui.py` / `python cli.py`) or as
+# a PyInstaller-built executable (see the .github/workflows and
+# packaging/*.spec files) - it isn't published to PyPI, so there are no
+# [project.scripts] console-script entry points: cli.py/gui.py live at the
+# repo root (not inside the `src` package) and import it as
+# `from src.tighc import ...`, which only resolves when they're run as
+# top-level scripts from the repo root, not as an installed console script.
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pyinstaller>=6.10"]
+
+[project.urls]
+Homepage = "https://tighc.stuxie.dev"
+Repository = "https://github.com/TIGHC/Engine"
+Changelog = "https://github.com/TIGHC/Engine/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.dynamic]
+# Single source of truth for the version - see src/version.py, which reads
+# this same file at runtime.
+version = { file = "VERSION.md" }
+
+[tool.pytest.ini_options]
+# Adds the repo root (this file's directory) to sys.path so `import src.xxx`
+# resolves the same way it does for cli.py/gui.py, without needing an
+# editable install or a conftest.py sys.path hack.
+pythonpath = ["."]
+testpaths = ["tests"]

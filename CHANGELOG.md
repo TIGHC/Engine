@@ -5,6 +5,37 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [3.10.0]
+
+### Added
+- **`LICENSE.md`** — TIGHC is now formally licensed under the
+  [GPL-3.0-or-later](LICENSE.md).
+- **Automated test suite (`pytest`)** — `tests/` covers the pure-logic
+  modules: profile parsing/validation, intensity ranges, device nickname
+  resolution, `haptics.json` load/merge/apply, filesystem paths, and
+  versioning. `tests/conftest.py` redirects `%APPDATA%\TIGHC` (or
+  `~/.local/share/TIGHC`) to a throwaway temp directory before any project
+  module is imported, so running the suite never touches a real install or
+  hits the network. See [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Packaging (`pyproject.toml`)** — project metadata, dependencies, and
+  pytest configuration, dynamically versioned from `VERSION.md` (the same
+  file `src/version.py` already read from).
+- **Prebuilt executables** — `tighc-gui.spec` and `tighc-cli.spec`
+  (PyInstaller) build standalone `TIGHC`/`TIGHC-CLI` executables for Windows
+  and Linux. `.github/workflows/ci.yml` runs the test suite on every push/PR
+  (Windows + Linux, Python 3.11/3.12) and, on a `vX.Y.Z` tag, builds all four
+  executables and publishes them to a GitHub Release - see the README's
+  "Quick start" and "Development" sections.
+
+### Fixed
+- **`VERSION.md`/`CHANGELOG.md`/`assets/` resolution when frozen** —
+  `src/version.py` and `gui.py` located these next to their own source file
+  (`Path(__file__)`-relative), which doesn't resolve correctly once bundled
+  into a PyInstaller executable. Both now go through a new
+  `src.paths.APP_ROOT` (the repo root when running from source, `sys._MEIPASS`
+  when frozen), so the packaged executables read the same bundled files
+  correctly.
+
 ## [3.9.17]
 
 ### Fixed

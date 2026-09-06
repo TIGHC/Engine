@@ -6,7 +6,7 @@ cli.py and gui.py are both built against `from src import tighc` /
 re-exported here so both entry points have one place to import everything
 from:
 
-  src/paths.py           - filesystem layout (configs/, profiles/, artwork_cache/)
+  src/paths.py           - filesystem layout (configs/, profiles/, artwork_cache/, APP_ROOT for bundled resources)
   src/metadata.py        - project name/repo URL
   src/version.py         - version number + get_version()/get_version_tuple()
   src/ranges.py          - VibeRange/DurationRange/PulseSpec
@@ -33,7 +33,7 @@ this facade.
 
 from src.metadata import AUTHOR_NAME, AUTHOR_URL, PROJECT_NAME, PROJECT_SHORT_NAME, REPO_URL, WEBSITE_URL
 from src.version import __version__, get_version, get_version_tuple
-from src.paths import ARTWORK_CACHE_DIR, CONFIGS_DIR, PROFILES_DIR, REPO_ROOT, USER_DATA_DIR
+from src.paths import APP_ROOT, ARTWORK_CACHE_DIR, CONFIGS_DIR, PROFILES_DIR, REPO_ROOT, USER_DATA_DIR
 from src.ranges import DurationRange, FloatRange, VibeRange
 from src.haptics import (
     BACKGROUND_TICK,

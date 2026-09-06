@@ -7,6 +7,10 @@ runs it until Ctrl+C. No GUI - hand-edit the JSON files and restart to
 change anything.
 
 Prefer an interactive configurator? Use `python gui.py` instead.
+
+Copyright (C) StuxieDev. Licensed under the GNU General Public License
+v3.0 (or later) - see LICENSE.md for the full text and
+https://github.com/TIGHC/Engine for source.
 """
 
 import asyncio

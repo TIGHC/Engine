@@ -20,16 +20,32 @@ what each module does.
 
 ## Making a change
 
-There's no automated test suite - verify changes manually:
+Run the automated test suite before opening a PR:
+
+```
+pip install pytest
+pytest
+```
+
+`tests/` covers the pure-logic modules (profile parsing/validation, intensity
+ranges, device nickname resolution, `haptics.json` load/merge/apply, paths,
+version) - it doesn't touch your real `%APPDATA%\TIGHC` (see
+`tests/conftest.py`), and doesn't cover the GUI, the engine's asyncio/input
+loop, or anything needing a real Intiface connection or toy. For those, verify
+manually:
 
 - The GUI's **Test** tab lets you simulate keybinds and drive channels
   directly without needing the real game or a connected toy.
-- If you touched profile loading/parsing, confirm a profile still loads
+- If you touched profile loading/parsing, also confirm a profile still loads
   cleanly from `%APPDATA%\TIGHC\profiles\` (or `~/.local/share/TIGHC/profiles/`
   on Linux) - a structurally invalid profile should fail fast with a clear
   error, not crash mid-session.
 - If you touched Linux-specific code (`src/input.py`'s X11 path), test on
   an actual X11 session where possible - see [LINUX_GUIDE.md](LINUX_GUIDE.md).
+
+CI (`.github/workflows/ci.yml`) runs the same test suite on Windows and Linux
+for every push/PR, and builds standalone GUI/CLI executables (via
+`tighc-gui.spec`/`tighc-cli.spec`) whenever a `vX.Y.Z` tag is pushed.
 
 ## Versioning
 
@@ -49,3 +65,8 @@ GUI's Profiles tab -> "New profile...".
 
 Open an issue with your OS, what you expected vs. what happened, and (if
 relevant) which profile/game and what's in the Run tab's log at the time.
+
+## License
+
+TIGHC is licensed under the [GPL-3.0-or-later](LICENSE.md). By contributing,
+you agree your contribution is licensed under the same terms.

@@ -13,6 +13,10 @@ those files and using this GUI are fully interchangeable.
 The buttplug/asyncio side of things runs on a dedicated background thread
 (AsyncBridge) so the Tkinter main loop never blocks; button handlers submit
 coroutines to it and marshal results back to the UI thread via `root.after`.
+
+Copyright (C) StuxieDev. Licensed under the GNU General Public License
+v3.0 (or later) - see LICENSE.md for the full text and
+https://github.com/TIGHC/Engine for source.
 """
 
 import asyncio
@@ -38,6 +42,7 @@ import sv_ttk
 
 from src import tighc
 from src.tighc import (
+    APP_ROOT,
     AUTHOR_NAME,
     AUTHOR_URL,
     CONFIGS_DIR,
@@ -61,7 +66,7 @@ from src.tighc import (
     save_device_registry,
 )
 
-CHANGELOG_PATH = Path(__file__).with_name("CHANGELOG.md")
+CHANGELOG_PATH = APP_ROOT / "CHANGELOG.md"
 ARTWORK_THUMBNAIL_WIDTH = 140  # target width in pixels; see _load_thumbnail_image
 GRID_PICKER_THUMBNAIL_WIDTH = 100  # smaller than ARTWORK_THUMBNAIL_WIDTH - many of these tile at once
 # Caps how many of a game's cover images _on_choose_cover_image() downloads
@@ -2149,7 +2154,7 @@ class App:
         # background (not transparent), so it displays correctly regardless
         # of the active light/dark theme without needing any re-theming.
         # Falls back to the plain text header if the asset is ever missing.
-        logo_path = Path(__file__).with_name("assets") / "logo.png"
+        logo_path = APP_ROOT / "assets" / "logo.png"
         if logo_path.exists():
             self._about_logo_image = tk.PhotoImage(file=str(logo_path))  # kept as an attribute so it isn't garbage-collected
             ttk.Label(frame, image=self._about_logo_image).pack(anchor="w", padx=PADX, pady=(PADY, 0))
@@ -2217,7 +2222,7 @@ class App:
 
         author_row = ttk.Frame(body)
         author_row.pack(anchor="w", pady=(2, 10))
-        avatar_path = Path(__file__).with_name("assets") / "author.png"
+        avatar_path = APP_ROOT / "assets" / "author.png"
         if avatar_path.exists():
             avatar_full = tk.PhotoImage(file=str(avatar_path))
             factor = max(1, avatar_full.width() // 32)
@@ -2502,7 +2507,7 @@ def main():
     # every Toplevel that doesn't set its own inherit it too, including the
     # age gate below - without this, every window just shows Tk's stock
     # feather icon instead of anything TIGHC-specific.
-    icon_path = Path(__file__).with_name("assets") / "icon.png"
+    icon_path = APP_ROOT / "assets" / "icon.png"
     if icon_path.exists():
         root.icon_image = tk.PhotoImage(file=str(icon_path))  # kept as an attribute so it isn't garbage-collected
         root.iconphoto(True, root.icon_image)
