@@ -5,7 +5,7 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
-## [3.10.0]
+## [4.0.0]
 
 ### Added
 - **`LICENSE.md`** — TIGHC is now formally licensed under the
