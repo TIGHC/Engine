@@ -21,15 +21,6 @@ Website: https://tighc.stuxie.dev
 Repository: https://github.com/TIGHC/Engine  
 License: [GPL-3.0-or-later](LICENSE.md)
 
-## Author
-
-<img src="assets/author.png" width="80" height="80" alt="StuxieDev" align="left" style="margin-right: 12px;">
-
-**[StuxieDev](https://github.com/StuxieDev)**
-
-<br>
-<br>
-
 ## Quick start
 
 Prefer not to install Python at all? Grab a standalone executable from the
@@ -277,3 +268,11 @@ project follows [Semantic Versioning](https://semver.org/)
 (`MAJOR.MINOR.PATCH`) - see [CHANGELOG.md](CHANGELOG.md) for what changed in
 each release. Questions, issues, or contributions:
 https://github.com/TIGHC/Engine
+
+## License
+
+Licensed under the [GPL-3.0-or-later](LICENSE.md).
+
+---
+
+*Built & Maintained by <img src="https://github.com/StuxieDev.png" height="14" alt="StuxieDev" valign="middle"> [StuxieDev](https://github.com/StuxieDev).*

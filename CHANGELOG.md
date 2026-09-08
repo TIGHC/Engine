@@ -5,7 +5,20 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
-## [4.0.0]
+## [4.0.1] - 2026-09-08
+
+### Fixed
+- `LICENSE.md` was a plain-text dump of GPLv3 (hard-wrapped lines, no
+  headings) that rendered as a wall of text. Replaced with the FSF's own
+  Markdown transcription (gnu.org/licenses/gpl-3.0.md) - identical legal
+  text, proper `#`/`##`/`###` headings and paragraph formatting, matching
+  the same fix already applied to the Automater project's `LICENSE.md`
+
+### Changed
+- `CHANGELOG.md` entries now carry a date next to each version (`## [x.y.z] - YYYY-MM-DD`), backfilled from each release's git tag, matching the Automater project's changelog format
+- `README.md`'s `## Author` block moved out from under the intro and replaced with a `## License` section and a "Built & Maintained by StuxieDev" footer line at the bottom, matching Automater's layout
+
+## [4.0.0] - 2026-09-07
 
 ### Added
 - **`LICENSE.md`** — TIGHC is now formally licensed under the
@@ -36,14 +49,14 @@ feature additions, PATCH marks fixes.
   when frozen), so the packaged executables read the same bundled files
   correctly.
 
-## [3.9.17]
+## [3.9.17] - 2026-09-01
 
 ### Fixed
 - **Mojibake in `commit.sh`/`commit.bat` console output** — an em dash in
   the log/echo messages rendered as garbled bytes (e.g. `ÔÇö`) on the
   default Windows console codepage. Replaced with plain ASCII dashes.
 
-## [3.9.16]
+## [3.9.16] - 2026-09-01
 
 ### Added
 - **Terms and Ethics disclaimer** — the age gate (`gui.py` and `cli.py`)
@@ -51,7 +64,7 @@ feature additions, PATCH marks fixes.
   agreeing to the [Terms and Ethics of Use](https://tighc.stuxie.dev/legal/terms),
   with a clickable link in the GUI.
 
-## [3.9.15]
+## [3.9.15] - 2026-09-01
 
 ### Fixed
 - **`commit.sh`/`commit.bat` staleness** — they hardcoded the version and
@@ -60,25 +73,25 @@ feature additions, PATCH marks fixes.
   `VERSION.md` dynamically, skip committing if nothing's staged, and skip
   tagging if the tag already exists.
 
-## [3.9.14]
+## [3.9.14] - 2026-08-30
 
 ### Added
 - **`commit.bat`/`commit.sh`** — pre-written commit+tag scripts, rewritten
   with each commit's exact message/tag before being run.
 
-## [3.9.13]
+## [3.9.13] - 2026-08-30
 
 ### Added
 - **`CONTRIBUTING.md`** — setup, manual verification steps (no automated
   test suite), and the versioning convention for PRs.
 
-## [3.9.12]
+## [3.9.12] - 2026-08-30
 
 ### Changed
 - **`version.txt` renamed to `VERSION.md`** — same single source of truth,
   read by `src/version.py`; only the filename changed.
 
-## [3.9.11]
+## [3.9.11] - 2026-08-30
 
 ### Fixed
 - **Priority: held bindings now loop correctly** — instead of one long held pulse
@@ -90,7 +103,7 @@ feature additions, PATCH marks fixes.
   now takes the channels within one 0.1s tick; releasing sprint lets W resume on
   the very next loop iteration.
 
-## [3.9.10]
+## [3.9.10] - 2026-08-30
 
 ### Fixed
 - **Priority preemption now works** — when a higher-priority binding's key is
@@ -102,7 +115,7 @@ feature additions, PATCH marks fixes.
   releasing Sprint happens without needing to re-press W. Priority order is
   configured in each profile's `priority` list (lower index = higher priority).
 
-## [3.9.9]
+## [3.9.9] - 2026-08-30
 
 ### Added
 - **Panic key action setting** — new "Panic key action" option in Settings with
@@ -113,7 +126,7 @@ feature additions, PATCH marks fixes.
     (same as clicking Stop), requiring a manual Start to resume. The Run tab
     updates automatically when the engine stops this way.
 
-## [3.9.8]
+## [3.9.8] - 2026-08-30
 
 ### Fixed
 - **Panic key logged** — pressing the panic key now logs which key was pressed
@@ -123,7 +136,7 @@ feature additions, PATCH marks fixes.
   timer, so a panic pressed just before stopping can't carry over and suppress
   output when the engine is next started.
 
-## [3.9.7]
+## [3.9.7] - 2026-08-30
 
 ### Added
 - **Run tab profile override** — new "Override profile" dropdown in the Run tab
@@ -136,7 +149,7 @@ feature additions, PATCH marks fixes.
   checkbox and all manual channel holds are now automatically cleared when you
   navigate away from the Test tab.
 
-## [3.9.6]
+## [3.9.6] - 2026-08-30
 
 ### Fixed
 - **Per-channel independent randomisation** — each connected device/channel now
@@ -144,7 +157,7 @@ feature additions, PATCH marks fixes.
   binding fires. Previously all channels received the same rolled value,
   making every device trigger at identical intensity simultaneously.
 
-## [3.9.5]
+## [3.9.5] - 2026-08-30
 
 ### Fixed
 - **Config backfill** — if a user's `haptics.json` is missing any keys (e.g.
@@ -152,14 +165,14 @@ feature additions, PATCH marks fixes.
   merged result back to disk so the file stays complete. Previously missing
   keys were only filled in memory.
 
-## [3.9.4]
+## [3.9.4] - 2026-08-30
 
 ### Changed
 - **Age gate remembered** — once you confirm you're 18+, the confirmation is
   saved to `haptics.json` (`confirmed_age: true`) and the age gate is skipped
   on every subsequent launch. Applies to both the GUI and CLI.
 
-## [3.9.3]
+## [3.9.3] - 2026-08-30
 
 ### Changed
 - **Color-coded terminal log** — the Run tab log pane now looks like a dark
@@ -169,7 +182,7 @@ feature additions, PATCH marks fixes.
   success messages (green). Activation events get inline span coloring:
   `[binding_id]` in gold, `activated` in teal, `(key)` in blue, `[range]` in orange.
 
-## [3.9.2]
+## [3.9.2] - 2026-08-30
 
 ### Changed
 - **Profiles fetched from GitHub** — bundled profiles are no longer stored in
@@ -184,12 +197,12 @@ feature additions, PATCH marks fixes.
 - **"Browse profiles on GitHub"** link in Settings opens the TIGHC-Profiles
   repository in the browser.
 
-## [3.9.1]
+## [3.9.1] - 2026-08-30
 
 ### Changed
 - (Superseded by 3.9.2 — bundled profiles removed from this repo entirely.)
 
-## [3.9.0]
+## [3.9.0] - 2026-08-30
 
 ### Changed
 - **User data moved to AppData** — profiles, configs, and artwork cache now live
@@ -216,7 +229,7 @@ feature additions, PATCH marks fixes.
   under the repo root will not be migrated automatically - copy them manually
   if you want to keep them.
 
-## [3.8.0]
+## [3.8.0] - 2026-08-30
 
 ### Changed
 - **No background idle vibe** — the engine no longer applies a steady low-level
@@ -234,7 +247,7 @@ feature additions, PATCH marks fixes.
 - `configs/haptics_config.json` is no longer read; rename it to
   `configs/haptics.json` to preserve your settings.
 
-## [3.7.1]
+## [3.7.1] - 2026-08-30
 
 ### Changed
 - **`version.txt`** added at the repo root as a single source of truth for the
@@ -242,7 +255,7 @@ feature additions, PATCH marks fixes.
   string, so external tools (the website, CI, etc.) can read the version without
   importing the package.
 
-## [3.7.0]
+## [3.7.0] - 2026-08-30
 
 ### Changed
 - **Single profile file** - each game profile is now stored as a single
@@ -260,7 +273,7 @@ feature additions, PATCH marks fixes.
   Migrate by merging them into a single `profile.json` (see the profiles
   submodule for the canonical format).
 
-## [3.6.0]
+## [3.6.0] - 2026-08-30
 
 ### Changed
 - **Unified binding model** - the continuous/pulse distinction has been
@@ -288,7 +301,7 @@ feature additions, PATCH marks fixes.
 - `ContinuousBinding`, `PulseBinding` classes removed from `src/profiles.py`.
 - Profiles saved by the GUI no longer include `mode` or `duration` fields.
 
-## [3.5.0]
+## [3.5.0] - 2026-08-30
 
 ### Added
 - **Pulse stops on key release** - pulse bindings no longer play for their full
@@ -305,7 +318,7 @@ feature additions, PATCH marks fixes.
   not just continuous. Pulse IDs in the priority list are preserved across saves
   so their position is remembered if the mode is later changed to continuous.
 
-## [3.4.0]
+## [3.4.0] - 2026-08-27
 
 ### Added
 - **Exact window title matching** - profiles now support a `window_title_exact`
@@ -349,7 +362,7 @@ feature additions, PATCH marks fixes.
   user. The guard now catches `TypeError` too, and `_compose_profile_files()`
   raises an explicit `ValueError` with a clear message for this case.
 
-## [3.3.2]
+## [3.3.2] - 2026-08-30
 
 ### Fixed
 - **`assets/icon.png`, `icon.ico`, and `logo.png` had an opaque dark
@@ -361,7 +374,7 @@ feature additions, PATCH marks fixes.
   fringe on the ring edges), and regenerated `icon.ico`'s multi-resolution
   frames from the fixed `icon.png`.
 
-## [3.3.1]
+## [3.3.1] - 2026-08-30
 
 ### Fixed
 - **Startup crash: `Failed to load profile 'assets'`** - the `profiles`
@@ -372,7 +385,7 @@ feature additions, PATCH marks fixes.
   *neither* file - not a profile at all - while still raising loudly on a
   folder that has only one of the two, which is a genuinely broken profile.
 
-## [3.3.0]
+## [3.3.0] - 2026-08-30
 
 ### Added
 - **App icon and logo** (`assets/icon.png`/`icon.ico`, `assets/logo.png`) -
@@ -405,7 +418,7 @@ feature additions, PATCH marks fixes.
   avatar and README section were also added to the TIGHC-Profiles and
   TIGHC-Website repos for consistency.
 
-## [3.2.1]
+## [3.2.1] - 2026-08-30
 
 ### Fixed
 - The Devices tab's "Connect + Scan" button stayed enabled even after a
@@ -417,7 +430,7 @@ feature additions, PATCH marks fixes.
   tab's "Start" button, which can establish the connection too if there
   wasn't one yet.
 
-## [3.2.0]
+## [3.2.0] - 2026-08-30
 
 ### Changed
 - **`src/core.py` (1600+ lines) split into focused modules** - `paths.py`
@@ -445,7 +458,7 @@ feature additions, PATCH marks fixes.
   etc.), printing a pointer to `cli.py`/`gui.py` instead - previously only
   `core.py` (now `tighc.py`) had this guard.
 
-## [3.1.1]
+## [3.1.1] - 2026-08-30
 
 ### Fixed
 - The Profiles tab's and Test tab's profile pickers displayed each
@@ -459,7 +472,7 @@ feature additions, PATCH marks fixes.
   `cli.py`'s startup banner and the engine's own profile-switch log
   already used `.name` correctly - only the GUI's pickers had this bug.
 
-## [3.1.0]
+## [3.1.0] - 2026-08-30
 
 ### Added
 - **Always-visible connection status indicator** in the top bar (not just
@@ -499,7 +512,7 @@ feature additions, PATCH marks fixes.
   still connected, and the device list could keep showing channels from a
   connection that no longer existed.
 
-## [3.0.0]
+## [3.0.0] - 2026-08-30
 
 Project layout reorganized so it's no longer ambiguous which file to run.
 
@@ -569,7 +582,7 @@ Project layout reorganized so it's no longer ambiguous which file to run.
   (wired to the Run tab log in `gui.py`) so a real fetch failure shows up
   instead of vanishing next time.
 
-## [2.0.0]
+## [2.0.0] - 2026-08-30
 
 Renamed the project from "Minecraft-x-Lovense-intiface" / "Game Haptics" to
 **The Intiface Game Haptics Controller (TIGHC)**, alongside a rewrite that
