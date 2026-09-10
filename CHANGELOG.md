@@ -5,6 +5,12 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.3] - 2026-09-10
+
+### Changed
+- Shrunk the header logo in `README.md`/`CONTRIBUTING.md`/`LINUX_GUIDE.md`
+  from `width="500"` to `width="300"`.
+
 ## [5.0.2] - 2026-09-10
 
 ### Fixed

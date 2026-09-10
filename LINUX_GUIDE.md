@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" width="500" alt="The Intiface Game Haptics Controller (TIGHC)">
+  <img src="assets/logo.png" width="300" alt="The Intiface Game Haptics Controller (TIGHC)">
 </p>
 
 # Linux / Steam Deck Guide
