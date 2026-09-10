@@ -5,6 +5,17 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.3] - 2026-09-10
+
+### Fixed
+- **`assets/logo.png`'s tagline read as a lighter, washed-out purple next
+  to the bold "TIGHC" wordmark and the icon** - not a different hue, just
+  much lower average opacity (the tagline's small font size meant few
+  pixels reached full alpha through anti-aliasing). Boosted the tagline's
+  alpha (~3x, capped at 255) and normalized every non-transparent pixel in
+  that region to the same purple used everywhere else, so it now reads as
+  solid and equally saturated instead of faded.
+
 ## [5.1.2] - 2026-09-10
 
 ### Changed
