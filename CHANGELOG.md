@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.4] - 2026-09-10
+
+### Fixed
+- **`assets/logo.png`'s tagline was still hard to read after v5.1.3's
+  alpha/color fix** - full opacity wasn't enough, since the tagline was
+  still a low-res raster crop rendered thin and small next to the bold
+  "TIGHC" wordmark. Re-rendered it as fresh vector text in Segoe UI
+  Semibold (matching the GUI's font) at a larger, bolder size, supersampled
+  and downsampled for crisp edges - the icon and "TIGHC" wordmark pixels
+  are untouched. New size 582x126 (was 455x126); the About tab and any
+  other consumer sizes it by width/height with the other dimension auto,
+  so nothing else needed to change.
+
 ## [5.1.3] - 2026-09-10
 
 ### Fixed

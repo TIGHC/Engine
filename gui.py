@@ -2150,10 +2150,11 @@ class App:
         frame = self.about_tab
 
         # Logo banner instead of the plain-text header every other tab
-        # uses - assets/logo.png already bakes in its own solid dark
-        # background (not transparent), so it displays correctly regardless
-        # of the active light/dark theme without needing any re-theming.
-        # Falls back to the plain text header if the asset is ever missing.
+        # uses - assets/logo.png is transparent, so the ttk.Label paints its
+        # own themed background behind it and it displays correctly
+        # regardless of the active light/dark theme without needing any
+        # re-theming. Falls back to the plain text header if the asset is
+        # ever missing.
         logo_path = APP_ROOT / "assets" / "logo.png"
         if logo_path.exists():
             self._about_logo_image = tk.PhotoImage(file=str(logo_path))  # kept as an attribute so it isn't garbage-collected
