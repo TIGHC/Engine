@@ -7,9 +7,11 @@ artwork_cache/
 __pycache__/
 *.pyc
 
-# pytest, and PyInstaller build output (build/ and dist/) - see
-# tighc-gui.spec, build.sh/build.bat, and .github/workflows/ci.yml for how
-# these are (re)built; nothing under either should ever be committed.
+# pytest, and PyInstaller build output (build/ and dist/, including the
+# .spec file PyInstaller itself generates into build/) - see
+# scripts/build_exe.py, build.sh/build.bat, and .github/workflows/ci.yml
+# for how these are (re)built; nothing under either should ever be
+# committed.
 .pytest_cache/
 build/
 dist/

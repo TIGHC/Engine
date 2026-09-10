@@ -3,9 +3,11 @@ name: CI
 # Runs the pytest suite on every push/PR (across OSes and supported Python
 # versions), and - only when a `vX.Y.Z` tag is pushed (see commit.sh/
 # commit.bat, which create that tag from VERSION.md) - builds a standalone
-# GUI executable for Windows, Linux, and macOS with PyInstaller and attaches
-# them to a GitHub Release. The release job depends on the test job passing
-# on the exact commit being tagged, so a broken build is never published.
+# GUI executable for Windows, Linux, and macOS via build.sh (the same
+# script a contributor runs locally - see scripts/build_exe.py for the
+# actual PyInstaller invocation) and attaches them to a GitHub Release.
+# The release job depends on the test job passing on the exact commit
+# being tagged, so a broken build is never published.
 
 on:
   push:
@@ -57,16 +59,11 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
+      - name: Build with build.sh
+        shell: bash
+        run: bash build.sh
 
-      - name: Build with PyInstaller
-        run: pyinstaller --noconfirm tighc-gui.spec
-
-      - name: Rename output binary
+      - name: Set asset path
         shell: bash
         run: |
           version="$(tr -d '[:space:]' < VERSION.md)"
@@ -74,9 +71,7 @@ jobs:
           ext=".exe"
           if [ "${{ runner.os }}" = "Linux" ]; then os_name="linux"; ext=""; fi
           if [ "${{ runner.os }}" = "macOS" ]; then os_name="macos"; ext=""; fi
-          dest_name="TIGHC-${os_name}-v${version}${ext}"
-          mv "dist/TIGHC${ext}" "dist/${dest_name}"
-          echo "ASSET_PATH=dist/${dest_name}" >> "$GITHUB_ENV"
+          echo "ASSET_PATH=dist/TIGHC-${os_name}-v${version}${ext}" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
         with:

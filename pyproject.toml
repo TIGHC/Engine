@@ -20,8 +20,8 @@ dependencies = [
 ]
 
 # This project is run from a clone (`python gui.py`) or as a
-# PyInstaller-built executable (see the .github/workflows and
-# packaging/*.spec files) - it isn't published to PyPI, so there are no
+# PyInstaller-built executable (see .github/workflows/ci.yml and
+# scripts/build_exe.py) - it isn't published to PyPI, so there are no
 # [project.scripts] console-script entry points: gui.py lives at the
 # repo root (not inside the `src` package) and imports it as
 # `from src.tighc import ...`, which only resolves when it's run as a

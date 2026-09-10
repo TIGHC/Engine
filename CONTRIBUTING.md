@@ -45,8 +45,8 @@ manually:
 
 CI (`.github/workflows/ci.yml`) runs the same test suite on Windows and Linux
 for every push/PR, and builds a standalone GUI executable (via
-`tighc-gui.spec`) for Windows, Linux, and macOS whenever a `vX.Y.Z` tag is
-pushed.
+`scripts/build_exe.py`) for Windows, Linux, and macOS whenever a `vX.Y.Z` tag
+is pushed.
 
 ## Versioning
 

@@ -4,11 +4,12 @@ REM Usage: build.bat
 REM
 REM Builds a standalone GUI executable with PyInstaller, the same way CI
 REM does for a tagged release (see .github/workflows/ci.yml's "build" job) -
-REM installs requirements.txt + pyinstaller if missing, runs `pyinstaller
-REM --noconfirm tighc-gui.spec`, then renames the output to match CI's
-REM naming convention (TIGHC-windows-vX.Y.Z.exe) so a local build looks like
-REM a release download. Output lands in dist\, which is gitignored - never
-REM committed.
+REM installs requirements.txt + pyinstaller if missing, runs
+REM scripts\build_exe.py (which drives PyInstaller via its argument API
+REM rather than a hand-maintained .spec file), then renames the output to
+REM match CI's naming convention (TIGHC-windows-vX.Y.Z.exe) so a local
+REM build looks like a release download. Output lands in dist\, which is
+REM gitignored - never committed.
 setlocal
 set "DIR=%~dp0"
 cd /d "%DIR%"
@@ -27,7 +28,7 @@ if errorlevel 1 (
 
 %PY% -m pip install -q -r requirements.txt
 %PY% -m pip install -q pyinstaller
-%PY% -m PyInstaller --noconfirm tighc-gui.spec
+%PY% scripts\build_exe.py
 if errorlevel 1 exit /b 1
 
 set /p VERSION=<VERSION.md

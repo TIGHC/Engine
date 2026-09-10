@@ -5,6 +5,20 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.2.1] - 2026-09-10
+
+### Changed
+- **Replaced the hand-maintained `tighc-gui.spec` with `scripts/build_exe.py`**,
+  a plain Python script that drives PyInstaller via its argument API instead
+  - matching how the sibling TWRAR/TS4RLS projects build. `build.sh`/
+  `build.bat` now run that script instead of `pyinstaller --noconfirm
+  tighc-gui.spec`, and CI's build job runs `build.sh` directly (via `bash
+  build.sh`) rather than calling PyInstaller itself, so the local and CI
+  build paths are exactly the same code. PyInstaller still writes a `.spec`
+  file as a byproduct, but into the gitignored `build/` dir, not one this
+  repo tracks. No behavior change for anyone just running `build.sh`/
+  `build.bat` or downloading a release - the built executable is identical.
+
 ## [5.2.0] - 2026-09-10
 
 ### Added

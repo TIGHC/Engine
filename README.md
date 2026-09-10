@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.2.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.2.1** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 Haptic feedback for your games, driven by the keys you're already pressing.
 
@@ -28,8 +28,8 @@ Prefer not to install Python at all? Grab a standalone executable from the
 **[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
 `TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` / `TIGHC-macos-vX.Y.Z`.
 These are built automatically by CI from this same source (see
-`.github/workflows/ci.yml` and the `tighc-gui.spec` PyInstaller spec) - no
-separate download needed. You can also browse every release, with download
+`.github/workflows/ci.yml` and `scripts/build_exe.py`) - no separate
+download needed. You can also browse every release, with download
 links per platform, on the [Releases page](https://tighc.stuxie.dev/releases).
 
 Running from source instead:
@@ -79,7 +79,7 @@ src/
 gui.py                            # interactive configurator + launcher (imports src/tighc.py)
 assets/                           # icon.png/icon.ico (window icon) and logo.png (About tab banner)
 tests/                            # pytest suite - see "Development" below
-tighc-gui.spec                    # PyInstaller build spec (see "Development" below)
+scripts/build_exe.py              # PyInstaller build script, run by build.sh/build.bat (see "Development" below)
 pyproject.toml                    # project metadata/dependencies + pytest config
 .github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
 %APPDATA%\TIGHC\  (~/Library/Application Support/TIGHC/ on macOS, ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git

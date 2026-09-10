@@ -4,10 +4,12 @@
 #
 # Builds a standalone GUI executable with PyInstaller, the same way CI does
 # for a tagged release (see .github/workflows/ci.yml's "build" job) -
-# installs requirements.txt + pyinstaller if missing, runs `pyinstaller
-# --noconfirm tighc-gui.spec`, then renames the output to match CI's naming
-# convention (TIGHC-<os>-vX.Y.Z) so a local build looks like a release
-# download. Output lands in dist/, which is gitignored - never committed.
+# installs requirements.txt + pyinstaller if missing, runs
+# scripts/build_exe.py (which drives PyInstaller via its argument API
+# rather than a hand-maintained .spec file), then renames the output to
+# match CI's naming convention (TIGHC-<os>-vX.Y.Z) so a local build looks
+# like a release download. Output lands in dist/, which is gitignored -
+# never committed.
 set -e
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -29,7 +31,7 @@ if [ "$(uname -s)" = "Linux" ] && ! "$PYTHON" -c "import tkinter" >/dev/null 2>&
     exit 1
 fi
 
-"$PYTHON" -m PyInstaller --noconfirm tighc-gui.spec
+"$PYTHON" scripts/build_exe.py
 
 VERSION="$(tr -d '[:space:]' < VERSION.md)"
 case "$(uname -s)" in
