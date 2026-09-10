@@ -120,18 +120,51 @@ _LOG_TAG_COLORS = {
 # (near-white) and its dark background (near-black) - avoids needing a
 # separate hint color per theme.
 HINT_COLOR = "#8f8f8f"
-# The violet from assets/icon.png and assets/logo.png - the app's brand
-# accent, used for clickable links and other custom-colored highlights.
-# This is *not* sv_ttk's own internal button/selection/focus color, which
-# comes baked into its theme definition (theme/dark.tcl, theme/light.tcl)
-# and isn't something this app overrides - doing that safely would mean
-# patching a third-party theme's Tcl internals rather than just setting a
-# color on our own widgets, which is a much bigger, riskier undertaking
-# than the custom style layer this app otherwise sticks to (see
-# _apply_custom_style_layer).
-ACCENT_COLOR = "#7C5CFF"
-ACCENT_COLOR_ACTIVE = "#694ED9"  # ACCENT_COLOR darkened ~15%, for a button's pressed/hover state
+# The app's brand accent, used for clickable links and other custom-colored
+# highlights. This is *not* sv_ttk's own internal button/selection/focus
+# color, which comes baked into its theme definition (theme/dark.tcl,
+# theme/light.tcl) and isn't something this app overrides - doing that
+# safely would mean patching a third-party theme's Tcl internals rather
+# than just setting a color on our own widgets, which is a much bigger,
+# riskier undertaking than the custom style layer this app otherwise
+# sticks to (see _apply_custom_style_layer).
+#
+# Matches the website's own light/dark accent tokens exactly (style.css's
+# --accent) so the two stay visually consistent: the dark value is also
+# assets/icon.png and assets/logo.png's violet, but the light value is a
+# deliberately darker shade for legible contrast on a near-white
+# background, same as the website's light theme. Look up the right one for
+# the active theme via accent_color_for()/accent_color_active_for() rather
+# than a single constant.
+ACCENT_COLOR_DARK = "#7C5CFF"
+ACCENT_COLOR_LIGHT = "#6947E0"
+ACCENT_COLOR_ACTIVE_DARK = "#694ED9"   # ACCENT_COLOR_DARK darkened ~15%, for a button's pressed/hover state
+ACCENT_COLOR_ACTIVE_LIGHT = "#593CBE"  # ACCENT_COLOR_LIGHT darkened ~15%, same treatment
 DEFAULT_THEME = "dark"
+
+
+def accent_color_for(theme: str) -> str:
+    return ACCENT_COLOR_DARK if theme == "dark" else ACCENT_COLOR_LIGHT
+
+
+def accent_color_active_for(theme: str) -> str:
+    return ACCENT_COLOR_ACTIVE_DARK if theme == "dark" else ACCENT_COLOR_ACTIVE_LIGHT
+
+
+# The changelog viewer's muted/code text colors, also matched to the
+# website's --text-dim/--code-text tokens per theme (style.css).
+_TEXT_DIM_DARK = "#a5a3b5"
+_TEXT_DIM_LIGHT = "#55536a"
+_CODE_TEXT_DARK = "#cfc4ff"
+_CODE_TEXT_LIGHT = "#4a34ad"
+
+
+def text_dim_color_for(theme: str) -> str:
+    return _TEXT_DIM_DARK if theme == "dark" else _TEXT_DIM_LIGHT
+
+
+def code_text_color_for(theme: str) -> str:
+    return _CODE_TEXT_DARK if theme == "dark" else _CODE_TEXT_LIGHT
 
 
 class AsyncBridge:
@@ -195,6 +228,7 @@ class App:
         self._test_channel_widgets = {}  # nickname -> {"level_var", "hold_var"}, rebuilt by _refresh_test_channels
         self._test_binding_widgets = {}  # binding id -> (hold_var, tokens), continuous bindings only
         self._scrollable_canvases = []  # plain Tk Canvases from _build_scrollable_body(), re-themed alongside log_text/changelog_text
+        self._accent_buttons = []  # classic tk.Buttons from _make_accent_button(), re-themed by _restyle_accent_buttons()
 
         self._build_ui()
         # Population order matters: profiles first (so the Test tab's profile
@@ -221,10 +255,10 @@ class App:
         """
         self.theme = DEFAULT_THEME
         sv_ttk.set_theme(self.theme, root)
-        self._apply_custom_style_layer(root)
+        self._apply_custom_style_layer(root, self.theme)
 
     @staticmethod
-    def _apply_custom_style_layer(root):
+    def _apply_custom_style_layer(root, theme):
         """The style tweaks that sit on top of whichever sv_ttk palette is currently active."""
         style = ttk.Style(root)
         root.option_add("*Font", "{Segoe UI} 10")
@@ -235,14 +269,20 @@ class App:
         style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold"))
         style.configure("Header.TLabel", font=HEADER_FONT)
         style.configure("Hint.TLabel", foreground=HINT_COLOR)
+        # Every fake-hyperlink ttk.Label (foreground=accent, cursor="hand2")
+        # uses this style instead of a hardcoded color, so toggling the
+        # theme re-colors all of them at once via this one style.configure()
+        # call rather than having to track and update each widget.
+        style.configure("Accent.TLabel", foreground=accent_color_for(theme))
 
     def _on_toggle_theme(self):
         """Flip sv_ttk between its light and dark palettes and refresh our own style layer to match."""
         sv_ttk.toggle_theme(self.root)
         self.theme = sv_ttk.get_theme(self.root)
-        self._apply_custom_style_layer(self.root)
+        self._apply_custom_style_layer(self.root, self.theme)
         self.theme_toggle_btn.config(text=self._theme_toggle_label())
         self._restyle_text_widgets()
+        self._restyle_accent_buttons()
 
     def _theme_toggle_label(self):
         """Button text names the theme you'd switch *to*, not the one currently active."""
@@ -313,6 +353,31 @@ class App:
             font = MONOSPACE_BOLD if tag in ("log_header", "log_profile", "log_panic") else MONOSPACE_FONT
             self.log_text.tag_configure(tag, foreground=dark_color, font=font)
 
+    def _configure_changelog_tags(self):
+        """
+        Color/font tags for the About tab's changelog viewer (headings,
+        bullets, inline code, muted prose) - accent/muted/code-text colors
+        all follow the active theme, matched to the website's own per-theme
+        tokens (--accent, --text-dim, --code-text in style.css). Called once
+        when the tab is built, and again every time the theme is toggled.
+        """
+        if not hasattr(self, "changelog_text"):
+            return
+        ct = self.changelog_text
+        accent = accent_color_for(self.theme)
+        text_dim = text_dim_color_for(self.theme)
+        code_text = code_text_color_for(self.theme)
+        ct.tag_configure("h2", font=("Segoe UI", 13, "bold"), foreground=accent,
+                         spacing1=18, spacing3=4)
+        ct.tag_configure("h3", font=("Segoe UI", 9, "bold"), foreground=text_dim,
+                         spacing1=10, spacing3=2)
+        ct.tag_configure("bullet", lmargin1=10, lmargin2=22, spacing1=1)
+        ct.tag_configure("bullet_dash", foreground=accent)
+        ct.tag_configure("prose", foreground=text_dim, font=("Segoe UI", 9),
+                         spacing1=2, spacing3=4)
+        ct.tag_configure("bold_span", font=("Segoe UI", 10, "bold"))
+        ct.tag_configure("code_span", font=MONOSPACE_FONT, foreground=code_text)
+
     def _restyle_text_widgets(self):
         """
         scrolledtext.ScrolledText (used for the Run tab's log and the About
@@ -329,6 +394,7 @@ class App:
         changelog_colors = self._text_widget_colors()
         if getattr(self, "changelog_text", None) is not None:
             self.changelog_text.configure(**changelog_colors)
+        self._configure_changelog_tags()
         for canvas in self._scrollable_canvases:
             canvas.configure(bg=changelog_colors["bg"])
 
@@ -401,8 +467,7 @@ class App:
         """A bold title at the top of a tab, so each one reads like a distinct page rather than a bare form."""
         ttk.Label(frame, text=text, style="Header.TLabel").pack(fill="x", padx=PADX, pady=(PADY, 0))
 
-    @staticmethod
-    def _make_accent_button(parent, text, command) -> tk.Button:
+    def _make_accent_button(self, parent, text, command) -> tk.Button:
         """
         A classic tk.Button (not ttk) filled with the app's accent color -
         for the handful of "primary action" buttons (Start, Connect + Scan,
@@ -415,15 +480,19 @@ class App:
         theme/dark.tcl) rather than a plain color fill, so
         style.configure(background=...) on it has no visible effect - the
         sprite's color is fixed at whatever sv_ttk itself chose. A classic
-        Button has none of that; its colors are just widget options.
+        Button has none of that; its colors are just widget options - which
+        also means, unlike ttk widgets, it won't pick up a theme toggle on
+        its own. Every button this creates is tracked in
+        self._accent_buttons so _restyle_accent_buttons() can recolor them
+        after a toggle.
         """
-        return tk.Button(
+        btn = tk.Button(
             parent,
             text=text,
             command=command,
-            bg=ACCENT_COLOR,
+            bg=accent_color_for(self.theme),
             fg="#ffffff",
-            activebackground=ACCENT_COLOR_ACTIVE,
+            activebackground=accent_color_active_for(self.theme),
             activeforeground="#ffffff",
             disabledforeground="#c9c9c9",
             relief="flat",
@@ -433,6 +502,15 @@ class App:
             font=("Segoe UI", 10),
             cursor="hand2",
         )
+        self._accent_buttons.append(btn)
+        return btn
+
+    def _restyle_accent_buttons(self):
+        """Recolor every classic tk.Button from _make_accent_button to the newly active theme's accent - called after each theme toggle."""
+        bg = accent_color_for(self.theme)
+        active_bg = accent_color_active_for(self.theme)
+        for btn in self._accent_buttons:
+            btn.configure(bg=bg, activebackground=active_bg)
 
     def _build_scrollable_body(self, parent, padding=None) -> ttk.Frame:
         """
@@ -1922,7 +2000,7 @@ class App:
         )
         row += 1
         key_link = ttk.Label(
-            body, text="Get a free key at steamgriddb.com/profile/preferences", foreground=ACCENT_COLOR, cursor="hand2"
+            body, text="Get a free key at steamgriddb.com/profile/preferences", style="Accent.TLabel", cursor="hand2"
         )
         key_link.grid(row=row, column=0, columnspan=2, sticky="w", **pad)
         key_link.bind("<Button-1>", lambda _e: webbrowser.open("https://www.steamgriddb.com/profile/preferences"))
@@ -1950,7 +2028,7 @@ class App:
         ttk.Button(folders_frame, text="Open user data folder", command=lambda: self._open_folder(USER_DATA_DIR)).pack(side="left", padx=(0, 6))
         ttk.Button(folders_frame, text="Open configs folder", command=lambda: self._open_folder(CONFIGS_DIR)).pack(side="left", padx=(0, 6))
         ttk.Button(folders_frame, text="Open profiles folder", command=lambda: self._open_folder(PROFILES_DIR)).pack(side="left", padx=(0, 6))
-        profiles_link = ttk.Label(folders_frame, text="Browse profiles on GitHub", foreground=ACCENT_COLOR, cursor="hand2")
+        profiles_link = ttk.Label(folders_frame, text="Browse profiles on GitHub", style="Accent.TLabel", cursor="hand2")
         profiles_link.pack(side="left", padx=(6, 0))
         profiles_link.bind("<Button-1>", lambda _e: webbrowser.open(TIGHC_PROFILES_URL))
         row += 1
@@ -2188,7 +2266,7 @@ class App:
         about_terms_row = ttk.Frame(body)
         about_terms_row.pack(anchor="w", pady=(0, 10))
         ttk.Label(about_terms_row, text="By using this software, you agree to the ").pack(side="left")
-        about_terms_link = ttk.Label(about_terms_row, text="Terms and Ethics of Use", foreground=ACCENT_COLOR, cursor="hand2")
+        about_terms_link = ttk.Label(about_terms_row, text="Terms and Ethics of Use", style="Accent.TLabel", cursor="hand2")
         about_terms_link.pack(side="left")
         about_terms_link.bind("<Button-1>", lambda _e: webbrowser.open(about_terms_url))
         ttk.Label(about_terms_row, text=".").pack(side="left")
@@ -2204,7 +2282,7 @@ class App:
         ttk.Label(website_row, text="Website: ").pack(side="left")
         # ttk.Label has no built-in hyperlink widget, so this fakes one: a
         # colored, hand-cursor label that opens the URL in the OS browser.
-        website_link = ttk.Label(website_row, text=WEBSITE_URL, foreground=ACCENT_COLOR, cursor="hand2")
+        website_link = ttk.Label(website_row, text=WEBSITE_URL, style="Accent.TLabel", cursor="hand2")
         website_link.pack(side="left")
         website_link.bind("<Button-1>", lambda _e: webbrowser.open(WEBSITE_URL))
 
@@ -2212,14 +2290,14 @@ class App:
         profiles_row.pack(anchor="w", pady=(2, 0))
         ttk.Label(profiles_row, text="Profiles: ").pack(side="left")
         profiles_url = WEBSITE_URL + "/profiles"
-        profiles_link = ttk.Label(profiles_row, text=profiles_url, foreground=ACCENT_COLOR, cursor="hand2")
+        profiles_link = ttk.Label(profiles_row, text=profiles_url, style="Accent.TLabel", cursor="hand2")
         profiles_link.pack(side="left")
         profiles_link.bind("<Button-1>", lambda _e: webbrowser.open(profiles_url))
 
         contact = ttk.Frame(body)
         contact.pack(anchor="w", pady=(2, 0))
         ttk.Label(contact, text="Repository: ").pack(side="left")
-        repo_link = ttk.Label(contact, text=REPO_URL, foreground=ACCENT_COLOR, cursor="hand2")
+        repo_link = ttk.Label(contact, text=REPO_URL, style="Accent.TLabel", cursor="hand2")
         repo_link.pack(side="left")
         repo_link.bind("<Button-1>", lambda _e: webbrowser.open(REPO_URL))
 
@@ -2232,7 +2310,7 @@ class App:
             factor = max(1, avatar_full.width() // 32)
             self._about_avatar_image = avatar_full.subsample(factor, factor)  # kept as an attribute so it isn't garbage-collected
             ttk.Label(author_row, image=self._about_avatar_image).pack(side="left", padx=(0, 6))
-        author_link = ttk.Label(author_row, text=AUTHOR_NAME, foreground=ACCENT_COLOR, cursor="hand2")
+        author_link = ttk.Label(author_row, text=AUTHOR_NAME, style="Accent.TLabel", cursor="hand2")
         author_link.pack(side="left")
         author_link.bind("<Button-1>", lambda _e: webbrowser.open(AUTHOR_URL))
 
@@ -2255,7 +2333,7 @@ class App:
         ttk.Label(changelog_header, text="Changelog", style="Header.TLabel").pack(side="left")
         ttk.Button(changelog_header, text="Reload", command=self._load_changelog).pack(side="right")
         changelogs_url = WEBSITE_URL + "/changelogs"
-        changelogs_link = ttk.Label(changelog_header, text="View on website", foreground=ACCENT_COLOR, cursor="hand2")
+        changelogs_link = ttk.Label(changelog_header, text="View on website", style="Accent.TLabel", cursor="hand2")
         changelogs_link.pack(side="right", padx=(0, 8))
         changelogs_link.bind("<Button-1>", lambda _e: webbrowser.open(changelogs_url))
 
@@ -2266,17 +2344,7 @@ class App:
         )
         self.changelog_text.pack(fill="x")
 
-        ct = self.changelog_text
-        ct.tag_configure("h2", font=("Segoe UI", 13, "bold"), foreground=ACCENT_COLOR,
-                         spacing1=18, spacing3=4)
-        ct.tag_configure("h3", font=("Segoe UI", 9, "bold"), foreground="#a5a3b5",
-                         spacing1=10, spacing3=2)
-        ct.tag_configure("bullet", lmargin1=10, lmargin2=22, spacing1=1)
-        ct.tag_configure("bullet_dash", foreground=ACCENT_COLOR)
-        ct.tag_configure("prose", foreground="#a5a3b5", font=("Segoe UI", 9),
-                         spacing1=2, spacing3=4)
-        ct.tag_configure("bold_span", font=("Segoe UI", 10, "bold"))
-        ct.tag_configure("code_span", font=MONOSPACE_FONT, foreground="#cfc4ff")
+        self._configure_changelog_tags()
         self._load_changelog()
 
     def _load_changelog(self):
@@ -2406,7 +2474,7 @@ class App:
         else:
             self.levels_label.config(text="(not connected)")
             self.connection_status_var.set("Connected - no devices found" if is_connected else "Not connected")
-        self.connection_status_label.config(foreground=ACCENT_COLOR if is_connected else HINT_COLOR)
+        self.connection_status_label.config(foreground=accent_color_for(self.theme) if is_connected else HINT_COLOR)
         self._status_poll_id = self.root.after(400, self._poll_status)
 
     def _on_close(self):
@@ -2431,9 +2499,14 @@ class App:
 
 
 def _show_age_gate(root) -> bool:
-    """Blocking 18+ acknowledgment shown before the main window - self-attestation, not real ID verification."""
+    """
+    Blocking 18+ acknowledgment shown before the main window - self-
+    attestation, not real ID verification. Laid out to match TWRAR's own
+    "Before you continue" disclaimer dialog: centered logo, bold title,
+    body, terms link, then buttons, each block evenly spaced.
+    """
     dialog = tk.Toplevel(root)
-    dialog.title("Age Verification")
+    dialog.title("Before you continue")
     dialog.resizable(False, False)
     # Deliberately NOT dialog.transient(root): root is still withdraw()n at
     # this point, and marking a Toplevel transient to a withdrawn/unmapped
@@ -2461,9 +2534,19 @@ def _show_age_gate(root) -> bool:
 
     dialog.protocol("WM_DELETE_WINDOW", decline)
 
-    body = ttk.Frame(dialog, padding=20)
+    body = ttk.Frame(dialog, padding=(24, 20))
     body.pack(fill="both", expand=True)
-    ttk.Label(body, text=f"{PROJECT_NAME} ({PROJECT_SHORT_NAME})", font=("Segoe UI", 11, "bold")).pack(pady=(0, 8))
+
+    logo_path = APP_ROOT / "assets" / "logo.png"
+    if logo_path.exists():
+        logo_full = tk.PhotoImage(file=str(logo_path))
+        factor = max(1, logo_full.height() // 64)
+        logo_image = logo_full.subsample(factor, factor)
+        logo_label = ttk.Label(body, image=logo_image)
+        logo_label.image = logo_image  # kept as an attribute so it isn't garbage-collected
+        logo_label.pack(pady=(0, 12))
+
+    ttk.Label(body, text="Before you continue", font=("Segoe UI", 12, "bold")).pack(pady=(0, 12))
     ttk.Label(
         body,
         text=(
@@ -2472,16 +2555,16 @@ def _show_age_gate(root) -> bool:
             "It is intended for use only by adults aged 18 or older."
         ),
         justify="center",
-    ).pack(pady=(0, 10))
+    ).pack(pady=(0, 12))
 
     terms_url = WEBSITE_URL + "/legal/terms"
     terms_row = ttk.Frame(body)
-    terms_row.pack(pady=(0, 16))
+    terms_row.pack(pady=(0, 12))
     ttk.Label(terms_row, text="By continuing, you agree to the ").pack(side="left")
     # Same fake-hyperlink pattern as the About tab: ttk.Label has no built-in
     # hyperlink widget, so this is a colored, hand-cursor label that opens
     # the URL in the OS browser.
-    terms_link = ttk.Label(terms_row, text="Terms and Ethics of Use", foreground=ACCENT_COLOR, cursor="hand2")
+    terms_link = ttk.Label(terms_row, text="Terms and Ethics of Use", style="Accent.TLabel", cursor="hand2")
     terms_link.pack(side="left")
     terms_link.bind("<Button-1>", lambda _e: webbrowser.open(terms_url))
     ttk.Label(terms_row, text=".").pack(side="left")
@@ -2543,7 +2626,7 @@ def main():
     # Buttons don't show this because their colors come from the theme's
     # static definition, not that async callback.
     root.update()
-    App._apply_custom_style_layer(root)
+    App._apply_custom_style_layer(root, DEFAULT_THEME)
     if not load_haptics_config().get("confirmed_age", False):
         if not _show_age_gate(root):
             root.destroy()

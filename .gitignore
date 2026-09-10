@@ -8,8 +8,8 @@ __pycache__/
 *.pyc
 
 # pytest, and PyInstaller build output (build/ and dist/) - see
-# tighc-gui.spec / tighc-cli.spec and .github/workflows/ci.yml for how these
-# are (re)built; nothing under either should ever be committed.
+# tighc-gui.spec, build.sh/build.bat, and .github/workflows/ci.yml for how
+# these are (re)built; nothing under either should ever be committed.
 .pytest_cache/
 build/
 dist/

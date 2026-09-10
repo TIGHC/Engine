@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.1.7** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.2.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 Haptic feedback for your games, driven by the keys you're already pressing.
 
@@ -242,10 +242,12 @@ matter which tab you're on.
 
 ```
 pip install -r requirements.txt
-pip install pytest pyinstaller
+pip install pytest
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
-pyinstaller tighc-gui.spec          # -> dist/TIGHC(.exe)
+./build.sh                          # or build.bat on Windows - installs pyinstaller if
+                                     # missing, builds, and names the output like a release
+                                     # download: dist/TIGHC-<os>-vX.Y.Z(.exe)
 ```
 
 The test suite never touches your real `%APPDATA%\TIGHC` (or

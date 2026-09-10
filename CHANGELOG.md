@@ -5,6 +5,39 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.2.0] - 2026-09-10
+
+### Added
+- **`build.sh`/`build.bat`** - build a standalone GUI executable locally the
+  same way CI does for a tagged release: installs `requirements.txt` +
+  `pyinstaller` if missing, runs `pyinstaller --noconfirm tighc-gui.spec`,
+  then renames the output to match CI's naming (`TIGHC-<os>-vX.Y.Z`).
+  Previously the only way to get an executable was to either wait for a
+  tagged CI build or run PyInstaller by hand.
+
+### Changed
+- **The GUI's accent color now follows the active theme**, matching the
+  website's own light/dark `--accent` tokens exactly instead of a single
+  fixed purple: `#7C5CFF` in dark mode (unchanged), `#6947E0` in light mode
+  (was also `#7C5CFF`, which had noticeably weaker contrast on sv_ttk's
+  near-white light background). Every fake-hyperlink label now uses a
+  shared `Accent.TLabel` ttk style instead of a hardcoded color, so toggling
+  the theme re-colors all of them via one `style.configure()` call; the
+  handful of classic tk.Button "primary action" buttons (Start, Connect +
+  Scan, the Save buttons) and the About tab's changelog viewer (heading,
+  bullet, and code-span colors, also matched to the website's per-theme
+  `--text-dim`/`--code-text` tokens) are now tracked and explicitly
+  recolored on toggle, since plain Tk widgets don't follow ttk style
+  changes automatically.
+- **The pre-launch disclaimer dialog is now titled and laid out like
+  TWRAR's own "Before you continue" dialog**: window title and heading
+  changed from "Age Verification"/"The Intiface Game Haptics Controller
+  (TIGHC)" to "Before you continue", with `assets/logo.png` now shown
+  centered above it (previously no logo at all, just text). Row spacing
+  was also evened out to a consistent 12px rhythm between blocks (logo,
+  title, body, terms link, buttons), matching TWRAR's layout. The terms
+  link/disclaimer and button row are unchanged.
+
 ## [5.1.7] - 2026-09-10
 
 ### Changed
