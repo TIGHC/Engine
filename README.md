@@ -270,4 +270,6 @@ Licensed under the [GPL-3.0-or-later](LICENSE.md).
 
 ---
 
-*Written & Maintained by <img src="https://github.com/StuxieDev.png" height="14" alt="StuxieDev" valign="middle"> [StuxieDev](https://projects.stuxie.dev).*
+*Written & Maintained by <img src="https://github.com/StuxieDev.png" height="14" alt="StuxieDev" valign="middle"> [StuxieDev](https://stuxie.dev).*
+
+*[A StuxieDev Project](https://projects.stuxie.dev)*
