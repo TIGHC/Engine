@@ -2,8 +2,8 @@ name: CI
 
 # Runs the pytest suite on every push/PR (across OSes and supported Python
 # versions), and - only when a `vX.Y.Z` tag is pushed (see commit.sh/
-# commit.bat, which create that tag from VERSION.md) - builds standalone
-# GUI/CLI executables for Windows and Linux with PyInstaller and attaches
+# commit.bat, which create that tag from VERSION.md) - builds a standalone
+# GUI executable for Windows, Linux, and macOS with PyInstaller and attaches
 # them to a GitHub Release. The release job depends on the test job passing
 # on the exact commit being tagged, so a broken build is never published.
 
@@ -38,14 +38,13 @@ jobs:
         run: pytest -v
 
   build:
-    name: Build ${{ matrix.target }} executable (${{ matrix.os }})
+    name: Build executable (${{ matrix.os }})
     if: startsWith(github.ref, 'refs/tags/v')
     needs: test
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
-        target: [gui, cli]
+        os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +54,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install Tk (Linux only - needed to bundle tkinter for the GUI build)
-        if: runner.os == 'Linux' && matrix.target == 'gui'
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev
 
       - name: Install dependencies
@@ -65,7 +64,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build with PyInstaller
-        run: pyinstaller --noconfirm tighc-${{ matrix.target }}.spec
+        run: pyinstaller --noconfirm tighc-gui.spec
 
       - name: Rename output binary
         shell: bash
@@ -74,15 +73,14 @@ jobs:
           os_name="windows"
           ext=".exe"
           if [ "${{ runner.os }}" = "Linux" ]; then os_name="linux"; ext=""; fi
-          src_name="TIGHC${ext}"
-          if [ "${{ matrix.target }}" = "cli" ]; then src_name="TIGHC-CLI${ext}"; fi
-          dest_name="TIGHC-${{ matrix.target }}-${os_name}-v${version}${ext}"
-          mv "dist/${src_name}" "dist/${dest_name}"
+          if [ "${{ runner.os }}" = "macOS" ]; then os_name="macos"; ext=""; fi
+          dest_name="TIGHC-${os_name}-v${version}${ext}"
+          mv "dist/TIGHC${ext}" "dist/${dest_name}"
           echo "ASSET_PATH=dist/${dest_name}" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: TIGHC-${{ matrix.target }}-${{ runner.os }}
+          name: TIGHC-${{ runner.os }}
           path: ${{ env.ASSET_PATH }}
 
   release:

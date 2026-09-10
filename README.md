@@ -6,10 +6,10 @@
 
 > **18+ only.** This software connects to and controls adult haptic/sex toy
 > devices based on your keyboard and mouse input while gaming. It is intended
-> for use only by adults aged 18 or older. Both `gui.py` and `cli.py`
-> require you to confirm this before they'll start.
+> for use only by adults aged 18 or older. `gui.py` requires you to confirm
+> this before it'll start.
 
-**Version 4.0.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.0.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 A haptic controller that links your keyboard/mouse input to a Buttplug/Intiface
 toy. Originally Minecraft-only, it now supports multiple game **profiles**,
@@ -25,11 +25,11 @@ License: [GPL-3.0-or-later](LICENSE.md)
 
 Prefer not to install Python at all? Grab a standalone executable from the
 **[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
-`TIGHC-gui-windows-vX.Y.Z.exe` / `TIGHC-gui-linux-vX.Y.Z` for the GUI, or the
-`TIGHC-cli-...` build for the headless CLI. These are built automatically by
-CI from this same source (see `.github/workflows/ci.yml` and the
-`tighc-gui.spec`/`tighc-cli.spec` PyInstaller specs) - no separate download
-needed.
+`TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` / `TIGHC-macos-vX.Y.Z`.
+These are built automatically by CI from this same source (see
+`.github/workflows/ci.yml` and the `tighc-gui.spec` PyInstaller spec) - no
+separate download needed. You can also browse every release, with download
+links per platform, on the [Releases page](https://tighc.stuxie.dev/releases).
 
 Running from source instead:
 
@@ -41,10 +41,6 @@ python gui.py
 This opens an interactive window: connect to Intiface, scan for devices,
 assign nicknames to each motor/capability, build or edit game profiles, tune
 global settings, and start/stop the haptics engine - all in one place.
-
-Prefer the terminal? `python cli.py` runs the same engine headlessly using
-whatever's already on disk (see below) - no GUI, just hand-edit the JSON
-files and restart to change things.
 
 If `python` doesn't work, try `py` instead, or call your Python install by
 full path (Windows users on OneDrive-synced folders sometimes need this).
@@ -59,9 +55,9 @@ the full setup walkthrough (switching sessions, installing dependencies,
 getting Intiface Central running, troubleshooting). Everything else in this
 README - profiles, the GUI, cover art - applies identically on Linux.
 
-Standalone Linux and Windows executables are built automatically for every
-tagged release (see [Quick start](#quick-start) above) - actual Steam Deck
-**Game Mode** support (as opposed to Desktop Mode, which already works
+Standalone Linux, Windows, and macOS executables are built automatically for
+every tagged release (see [Quick start](#quick-start) above) - actual Steam
+Deck **Game Mode** support (as opposed to Desktop Mode, which already works
 today) is still a roadmap item; see LINUX_GUIDE.md's note on this.
 
 ## How it's organized
@@ -79,14 +75,13 @@ src/
   paths.py                        # filesystem layout (configs/, profiles/, artwork_cache/)
   metadata.py                     # project name/repo URL
   version.py                      # version number + get_version()/get_version_tuple()
-cli.py                            # headless CLI entry point (imports src/tighc.py)
-gui.py                            # interactive configurator + launcher (also imports src/tighc.py)
+gui.py                            # interactive configurator + launcher (imports src/tighc.py)
 assets/                           # icon.png/icon.ico (window icon) and logo.png (About tab banner)
 tests/                            # pytest suite - see "Development" below
-tighc-gui.spec, tighc-cli.spec    # PyInstaller build specs (see "Development" below)
+tighc-gui.spec                    # PyInstaller build spec (see "Development" below)
 pyproject.toml                    # project metadata/dependencies + pytest config
 .github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
-%APPDATA%\TIGHC\  (or ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
+%APPDATA%\TIGHC\  (~/Library/Application Support/TIGHC/ on macOS, ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
   profiles/                       # downloaded from TIGHC-Profiles on GitHub on first launch
   configs/
     haptics.json                  # global settings (connection, panic key, smoothing, ...)
@@ -99,15 +94,14 @@ pyproject.toml                    # project metadata/dependencies + pytest confi
 ```
 
 `configs/` and its contents, along with `artwork_cache/`, are created
-automatically (with sensible defaults) the first time you run `cli.py` or
-`gui.py` - you don't need to create them yourself. Editing the JSON files by
-hand and using the GUI are fully interchangeable - both just read/write the
-same files.
+automatically (with sensible defaults) the first time you run `gui.py` - you
+don't need to create them yourself. Editing the JSON files by hand and using
+the GUI are fully interchangeable - both just read/write the same files.
 
 ## Profiles: one per game
 
-Your profiles live in `%APPDATA%\TIGHC\profiles\` (or `~/.local/share/TIGHC/profiles/`
-on Linux). On first launch, TIGHC downloads all profiles from
+Your profiles live in `%APPDATA%\TIGHC\profiles\` (`~/Library/Application Support/TIGHC/profiles/`
+on macOS, `~/.local/share/TIGHC/profiles/` on Linux). On first launch, TIGHC downloads all profiles from
 [TIGHC-Profiles](https://github.com/TIGHC/Profiles) on GitHub and
 seeds them there. Profiles you edit are never overwritten automatically.
 
@@ -251,13 +245,13 @@ pip install pytest pyinstaller
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
 pyinstaller tighc-gui.spec          # -> dist/TIGHC(.exe)
-pyinstaller tighc-cli.spec          # -> dist/TIGHC-CLI(.exe)
 ```
 
 The test suite never touches your real `%APPDATA%\TIGHC` (or
-`~/.local/share/TIGHC`) - `tests/conftest.py` redirects it to a throwaway
-temp directory before anything under `src/` is imported, so running `pytest`
-is always safe on a machine that already has TIGHC configured. See
+`~/Library/Application Support/TIGHC`/`~/.local/share/TIGHC`) -
+`tests/conftest.py` redirects it to a throwaway temp directory before
+anything under `src/` is imported, so running `pytest` is always safe on a
+machine that already has TIGHC configured. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for what's expected of a pull request.
 
 ## About, versioning, and contact

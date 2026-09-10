@@ -1,5 +1,5 @@
 """TIGHC's version - single source of truth, read by the engine's startup
-banner, cli.py, and gui.py's About tab.
+banner and gui.py's About tab.
 
 The version number lives in VERSION.md alongside src.paths.APP_ROOT (the
 repo root when running from source, or a PyInstaller executable's bundled
@@ -33,4 +33,4 @@ def get_version_tuple() -> tuple:
 
 if __name__ == "__main__":
     print(f"{__file__} is TIGHC's version module - it's a library, not meant to be run directly.")
-    print("Run `python cli.py` (from the repo root) for the headless CLI, or `python gui.py` for the interactive GUI.")
+    print("Run `python gui.py` (from the repo root) for the interactive GUI.")

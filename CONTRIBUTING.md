@@ -12,7 +12,7 @@ Issues and pull requests are welcome at
 ```
 git clone https://github.com/TIGHC/Engine.git
 pip install -r requirements.txt
-python gui.py    # or: python cli.py
+python gui.py
 ```
 
 See the [README](README.md) for how the engine is organized (`src/`) and
@@ -29,7 +29,7 @@ pytest
 
 `tests/` covers the pure-logic modules (profile parsing/validation, intensity
 ranges, device nickname resolution, `haptics.json` load/merge/apply, paths,
-version) - it doesn't touch your real `%APPDATA%\TIGHC` (see
+version) - it doesn't touch your real per-user TIGHC data directory (see
 `tests/conftest.py`), and doesn't cover the GUI, the engine's asyncio/input
 loop, or anything needing a real Intiface connection or toy. For those, verify
 manually:
@@ -37,15 +37,16 @@ manually:
 - The GUI's **Test** tab lets you simulate keybinds and drive channels
   directly without needing the real game or a connected toy.
 - If you touched profile loading/parsing, also confirm a profile still loads
-  cleanly from `%APPDATA%\TIGHC\profiles\` (or `~/.local/share/TIGHC/profiles/`
-  on Linux) - a structurally invalid profile should fail fast with a clear
+  cleanly from `%APPDATA%\TIGHC\profiles\` (`~/Library/Application Support/TIGHC/profiles/`
+  on macOS, `~/.local/share/TIGHC/profiles/` on Linux) - a structurally invalid profile should fail fast with a clear
   error, not crash mid-session.
 - If you touched Linux-specific code (`src/input.py`'s X11 path), test on
   an actual X11 session where possible - see [LINUX_GUIDE.md](LINUX_GUIDE.md).
 
 CI (`.github/workflows/ci.yml`) runs the same test suite on Windows and Linux
-for every push/PR, and builds standalone GUI/CLI executables (via
-`tighc-gui.spec`/`tighc-cli.spec`) whenever a `vX.Y.Z` tag is pushed.
+for every push/PR, and builds a standalone GUI executable (via
+`tighc-gui.spec`) for Windows, Linux, and macOS whenever a `vX.Y.Z` tag is
+pushed.
 
 ## Versioning
 

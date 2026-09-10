@@ -167,4 +167,4 @@ class DeviceChannel:
 
 if __name__ == "__main__":
     print(f"{__file__} is TIGHC's device-registry module - it's a library, not meant to be run directly.")
-    print("Run `python cli.py` (from the repo root) for the headless CLI, or `python gui.py` for the interactive GUI.")
+    print("Run `python gui.py` (from the repo root) for the interactive GUI.")

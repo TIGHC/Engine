@@ -1,10 +1,9 @@
 """The Intiface Game Haptics Controller (TIGHC) - engine + cover-art library facade.
 
 This module is a re-export surface, not where the implementation lives.
-cli.py and gui.py are both built against `from src import tighc` /
-`from src.tighc import NAME`; the actual code lives in focused modules,
-re-exported here so both entry points have one place to import everything
-from:
+gui.py is built against `from src import tighc` / `from src.tighc import
+NAME`; the actual code lives in focused modules, re-exported here so the
+entry point has one place to import everything from:
 
   src/paths.py           - filesystem layout (configs/, profiles/, artwork_cache/, APP_ROOT for bundled resources)
   src/metadata.py        - project name/repo URL
@@ -18,7 +17,7 @@ from:
   src/steamgriddb.py     - SteamGridDB cover-art fetching/caching
 
 This module isn't meant to be run directly - it's a library, imported by
-cli.py (headless) and gui.py (interactive).
+gui.py.
 
 Caveat for anyone adding new code: the settings re-exported below that
 apply_haptics_config() can change at runtime (INTIFACE_WS,
@@ -103,7 +102,7 @@ from src.steamgriddb import (
 
 if __name__ == "__main__":
     print(f"{__file__} is the {PROJECT_SHORT_NAME} engine + cover-art library - it's not meant to be run directly.")
-    print("Run `python cli.py` (from the repo root) for the headless CLI, or `python gui.py` for the interactive GUI.")
+    print("Run `python gui.py` (from the repo root) for the interactive GUI.")
 
 # Happy Vibes
 # KARMA

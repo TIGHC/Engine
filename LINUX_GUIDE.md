@@ -112,14 +112,13 @@ you would on Windows.
 
 ## 4. Run TIGHC
 
-Same commands as everywhere else:
+Same command as everywhere else:
 
 ```
 python3 gui.py       # interactive configurator (needs the X11 session from step 1)
-python3 cli.py        # headless, once profiles/config are already set up
 ```
 
-Both still show the 18+ age-gate exactly as on Windows.
+It still shows the 18+ age-gate exactly as on Windows.
 
 ## Troubleshooting
 

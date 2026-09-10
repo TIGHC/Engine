@@ -5,6 +5,37 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.0] - 2026-09-10
+
+### Removed
+- **The headless CLI (`cli.py`, `tighc-cli.spec`)** - the GUI is now the only
+  entry point and the only executable a release builds/publishes. Breaking
+  for anyone scripting against `cli.py` or downloading a `TIGHC-CLI` /
+  `TIGHC-cli-...` release asset - those no longer exist. Every `src/`
+  module's re-exported facade (`src/tighc.py`) is unaffected; only the
+  headless entry point and its packaging are gone.
+
+### Added
+- **macOS release builds** - `macos-latest` added to the CI build matrix
+  alongside Windows and Linux, so tagged releases now include a
+  `TIGHC-macos-vX.Y.Z` executable too. Both `.spec` files already handled the
+  macOS `pynput` backend and skip the Windows-only `.ico`, so no packaging
+  changes were needed there.
+- **Releases page on the website** - browse every past release, with
+  per-platform download links, at
+  [tighc.stuxie.dev/releases](https://tighc.stuxie.dev/releases).
+
+### Changed
+- **`src/paths.py`** now uses the native macOS per-user data directory
+  (`~/Library/Application Support/TIGHC/`) instead of falling through to the
+  Linux XDG path, so a Mac install behaves like a native Mac app rather than
+  a ported Linux one. `tests/conftest.py` redirects `HOME` (in addition to
+  `APPDATA`/`XDG_DATA_HOME`) so this stays isolated from a developer's real
+  install if the suite is ever run on a Mac.
+- **Release asset naming** simplified now that there's only one executable
+  per platform: `TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` /
+  `TIGHC-macos-vX.Y.Z` (previously `TIGHC-gui-...`/`TIGHC-cli-...`).
+
 ## [4.0.1] - 2026-09-08
 
 ### Fixed

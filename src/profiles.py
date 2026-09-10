@@ -347,13 +347,12 @@ def load_profiles() -> dict:
     return profiles
 
 
-# Loaded once at import time. cli.py uses this module-level dict directly;
-# gui.py instead makes its own copy via load_profiles() so it can freely
-# mutate its own controller's profile set (add/edit/reload) without
-# touching this one.
+# Loaded once at import time. gui.py copies this into its own controller's
+# profile set at startup (see gui.py's HapticsController construction) and
+# freely mutates that copy (add/edit/reload) without touching this one.
 PROFILES = load_profiles()
 
 
 if __name__ == "__main__":
     print(f"{__file__} is TIGHC's game-profile module - it's a library, not meant to be run directly.")
-    print("Run `python cli.py` (from the repo root) for the headless CLI, or `python gui.py` for the interactive GUI.")
+    print("Run `python gui.py` (from the repo root) for the interactive GUI.")

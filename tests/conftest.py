@@ -16,14 +16,24 @@ test module or the `src` package, since conftest.py is always collected
 
 import json
 import os
+import sys
 import tempfile
 from pathlib import Path
 
 _TEST_DATA_DIR = Path(tempfile.mkdtemp(prefix="tighc-pytest-"))
 os.environ["APPDATA"] = str(_TEST_DATA_DIR)
 os.environ["XDG_DATA_HOME"] = str(_TEST_DATA_DIR)
+# macOS ignores XDG_DATA_HOME (it uses ~/Library/Application Support instead
+# - see src/paths.py), so also redirect HOME: Path.home() reads it on every
+# POSIX platform, which keeps this isolated even when run on a real Mac.
+os.environ["HOME"] = str(_TEST_DATA_DIR)
 
-_seed_profile_dir = _TEST_DATA_DIR / "TIGHC" / "profiles" / "minecraft"
+_user_data_dir = (
+    _TEST_DATA_DIR / "Library" / "Application Support" / "TIGHC"
+    if sys.platform == "darwin"
+    else _TEST_DATA_DIR / "TIGHC"
+)
+_seed_profile_dir = _user_data_dir / "profiles" / "minecraft"
 _seed_profile_dir.mkdir(parents=True, exist_ok=True)
 (_seed_profile_dir / "profile.json").write_text(
     json.dumps(
