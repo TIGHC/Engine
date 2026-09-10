@@ -31,6 +31,7 @@ import threading
 import tkinter as tk
 import webbrowser
 from pathlib import Path
+from tkinter import font as tkfont
 from tkinter import messagebox, scrolledtext, simpledialog, ttk
 
 # sv_ttk ("Sun Valley") is a third-party ttk theme that reskins every stock
@@ -2237,12 +2238,17 @@ class App:
 
         project_row = ttk.Frame(body)
         project_row.pack(anchor="w", pady=(0, 10))
-        project_link = ttk.Label(
-            project_row, text="A StuxieDev Project", style="Hint.TLabel", cursor="hand2",
-            font=("Segoe UI", 9, "underline"),
-        )
+        project_link = ttk.Label(project_row, text="A StuxieDev Project", style="Hint.TLabel", cursor="hand2")
         project_link.pack(side="left")
         project_link.bind("<Button-1>", lambda _e: webbrowser.open(PROJECTS_URL))
+        # Underline only on hover, like a normal web link - the default
+        # (non-underlined) font is captured here rather than hardcoded so it
+        # always matches whatever Hint.TLabel actually resolves to.
+        _project_link_font = tkfont.Font(font=project_link.cget("font"))
+        _project_link_hover_font = _project_link_font.copy()
+        _project_link_hover_font.configure(underline=True)
+        project_link.bind("<Enter>", lambda _e: project_link.configure(font=_project_link_hover_font))
+        project_link.bind("<Leave>", lambda _e: project_link.configure(font=_project_link_font))
 
         changelog_header = ttk.Frame(body)
         changelog_header.pack(fill="x", pady=(4, 4))

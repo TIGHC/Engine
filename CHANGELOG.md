@@ -5,6 +5,13 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.7] - 2026-09-10
+
+### Changed
+- **About tab's "A StuxieDev Project" link is now underlined only on
+  hover** (was always underlined) - matches how a normal web link
+  behaves, and how the website's own footer link behaves.
+
 ## [5.1.6] - 2026-09-10
 
 ### Changed
