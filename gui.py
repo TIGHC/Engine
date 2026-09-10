@@ -44,11 +44,11 @@ from src import tighc
 from src.tighc import (
     APP_ROOT,
     AUTHOR_NAME,
-    AUTHOR_URL,
     CONFIGS_DIR,
     PROFILES_DIR,
     PROJECT_NAME,
     PROJECT_SHORT_NAME,
+    PROJECTS_URL,
     REPO_URL,
     TIGHC_PROFILES_URL,
     USER_DATA_DIR,
@@ -2222,16 +2222,17 @@ class App:
 
         author_row = ttk.Frame(body)
         author_row.pack(anchor="w", pady=(2, 10))
+        ttk.Label(author_row, text="A ").pack(side="left")
         avatar_path = APP_ROOT / "assets" / "author.png"
         if avatar_path.exists():
             avatar_full = tk.PhotoImage(file=str(avatar_path))
             factor = max(1, avatar_full.width() // 32)
             self._about_avatar_image = avatar_full.subsample(factor, factor)  # kept as an attribute so it isn't garbage-collected
             ttk.Label(author_row, image=self._about_avatar_image).pack(side="left", padx=(0, 6))
-        ttk.Label(author_row, text="Author: ").pack(side="left")
         author_link = ttk.Label(author_row, text=AUTHOR_NAME, foreground=ACCENT_COLOR, cursor="hand2")
         author_link.pack(side="left")
-        author_link.bind("<Button-1>", lambda _e: webbrowser.open(AUTHOR_URL))
+        author_link.bind("<Button-1>", lambda _e: webbrowser.open(PROJECTS_URL))
+        ttk.Label(author_row, text=" Project").pack(side="left")
 
         changelog_header = ttk.Frame(body)
         changelog_header.pack(fill="x", pady=(4, 4))

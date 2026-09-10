@@ -10,6 +10,7 @@ REPO_URL = "https://github.com/TIGHC/Engine"
 WEBSITE_URL = "https://tighc.stuxie.dev"
 AUTHOR_NAME = "StuxieDev"
 AUTHOR_URL = "https://stuxie.dev"
+PROJECTS_URL = "https://projects.stuxie.dev"
 
 
 if __name__ == "__main__":

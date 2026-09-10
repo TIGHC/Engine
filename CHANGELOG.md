@@ -5,6 +5,17 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.1] - 2026-09-10
+
+### Changed
+- **The GUI's About tab now matches v5.1.0's "A StuxieDev Project" branding**
+  - the "Author: StuxieDev" line (linking to `stuxie.dev`) is now "A
+  StuxieDev Project" (linking to the new `PROJECTS_URL`,
+  `https://projects.stuxie.dev`), same wording and link target as
+  `README.md`'s footer and the website's. New `PROJECTS_URL` constant in
+  `src/metadata.py`, re-exported through `src/tighc.py` alongside the
+  existing `AUTHOR_URL` (still used elsewhere, just no longer by the GUI).
+
 ## [5.1.0] - 2026-09-10
 
 ### Changed
