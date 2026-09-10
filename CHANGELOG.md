@@ -5,6 +5,18 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.5] - 2026-09-10
+
+### Fixed
+- **`assets/logo.png`'s tagline was a slightly different shade of purple
+  than the icon and "TIGHC" wordmark** - v5.1.4's re-render used the font
+  rasterizer's anti-aliased blend rather than the icon's exact solid fill
+  color. Re-rendered the tagline in that exact color (`#7C5CFF`) and
+  switched from Segoe UI Semibold to true Segoe UI Bold, so it now reads as
+  one consistent color and weight with the rest of the lockup, just bolder
+  than the surrounding elements as intended. New size 600x126 (was
+  582x126).
+
 ## [5.1.4] - 2026-09-10
 
 ### Fixed
