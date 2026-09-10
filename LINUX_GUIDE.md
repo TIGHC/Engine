@@ -79,12 +79,11 @@ with `ModuleNotFoundError`, your distro likely splits it into a separate
 package (e.g. `python3-tk` on Debian/Ubuntu-based distros, `tk` on Arch);
 SteamOS's own Python normally has it built in.
 
-Clone the repo **with its submodule** (`profiles/` is a separate git
-repository - see the main README's Quick start for why):
+Clone the repo:
 
 ```
-git clone --recurse-submodules https://github.com/TIGHC/Engine.git
-cd TIGHC
+git clone https://github.com/TIGHC/Engine.git
+cd Engine
 ```
 
 Then install dependencies:

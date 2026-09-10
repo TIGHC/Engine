@@ -5,6 +5,22 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.2] - 2026-09-10
+
+### Fixed
+- **`LINUX_GUIDE.md`** still told Linux users to clone with
+  `--recurse-submodules` and `cd TIGHC` - the `profiles/` submodule was
+  removed back in v3.9.1 (profiles are downloaded automatically on first
+  launch instead), and the repo is named `Engine`, so a plain clone creates
+  an `Engine/` directory, not `TIGHC/`. Now matches the main README's
+  already-correct Quick start instructions.
+
+### Changed
+- **"TIGHC-Profiles" renamed to "TIGHC Profiles"** (no hyphen) everywhere
+  it's used as a display name - `README.md`, and the "Restore from
+  GitHub..."/"Update profiles from GitHub" comments and confirmation
+  dialog text in `gui.py` - matching the correct project name.
+
 ## [5.0.1] - 2026-09-10
 
 ### Fixed

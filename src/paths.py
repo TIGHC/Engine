@@ -12,7 +12,7 @@ per-user app directory so it survives git updates and submodule updates:
   Linux:   ~/.local/share/TIGHC/
 
 On first launch (empty user profiles dir), profiles.py fetches all profiles
-from the TIGHC-Profiles GitHub repo and seeds them into the user profiles dir.
+from the TIGHC Profiles GitHub repo and seeds them into the user profiles dir.
 """
 
 import os

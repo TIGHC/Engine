@@ -7,7 +7,7 @@ entry contains its own keys, devices, and vibe range inline.
 
 User profiles live in the platform-standard app data directory (see
 src/paths.py - PROFILES_DIR). On first launch (empty user profiles dir),
-seed_user_profiles() downloads all profiles from the TIGHC-Profiles GitHub
+seed_user_profiles() downloads all profiles from the TIGHC Profiles GitHub
 repo. Existing user profiles are never overwritten by seeding - only profile
 ids not yet present in the user dir are fetched.
 
@@ -90,7 +90,7 @@ def _github_get(url: str, timeout: int = 8) -> Optional[bytes]:
 
 def fetch_profile_ids_from_github() -> list:
     """
-    Return the list of profile folder names available in the TIGHC-Profiles
+    Return the list of profile folder names available in the TIGHC Profiles
     GitHub repo (i.e. every directory at the repo root that isn't 'assets').
     Returns an empty list if the request fails (offline, rate-limited, etc.).
     """
@@ -109,7 +109,7 @@ def fetch_profile_ids_from_github() -> list:
 
 def fetch_profile_from_github(profile_id: str) -> Optional[dict]:
     """
-    Fetch and parse a single profile.json from the TIGHC-Profiles GitHub repo.
+    Fetch and parse a single profile.json from the TIGHC Profiles GitHub repo.
     Returns the parsed dict or None if the request fails or the JSON is invalid.
     """
     data = _github_get(f"{TIGHC_PROFILES_RAW_BASE}/{profile_id}/profile.json")
@@ -123,14 +123,14 @@ def fetch_profile_from_github(profile_id: str) -> Optional[dict]:
 
 def download_missing_profiles(log=print) -> int:
     """
-    Fetch any profile from the TIGHC-Profiles GitHub repo that isn't already
+    Fetch any profile from the TIGHC Profiles GitHub repo that isn't already
     in the user's profiles dir. Returns the number of newly downloaded profiles.
     Profiles the user already has (even if unmodified) are left untouched.
     """
     existing = {d.name for d in PROFILES_DIR.iterdir() if d.is_dir()} if PROFILES_DIR.exists() else set()
     profile_ids = fetch_profile_ids_from_github()
     if not profile_ids:
-        log("Could not reach TIGHC-Profiles on GitHub (offline?).")
+        log("Could not reach TIGHC Profiles on GitHub (offline?).")
         return 0
 
     new_ids = [pid for pid in profile_ids if pid not in existing]
@@ -151,7 +151,7 @@ def download_missing_profiles(log=print) -> int:
 def restore_profile_from_github(profile_id: str) -> bool:
     """
     Overwrite the user's copy of profile_id with the version from the
-    TIGHC-Profiles GitHub repo. Returns True on success, False if the
+    TIGHC Profiles GitHub repo. Returns True on success, False if the
     profile doesn't exist in the repo or the download fails.
     """
     data = fetch_profile_from_github(profile_id)
@@ -168,7 +168,7 @@ restore_profile_from_bundled = restore_profile_from_github
 
 
 def has_bundled_version(profile_id: str) -> bool:
-    """True if this profile exists in the TIGHC-Profiles GitHub repo."""
+    """True if this profile exists in the TIGHC Profiles GitHub repo."""
     data = _github_get(
         f"{TIGHC_PROFILES_RAW_BASE}/{profile_id}/profile.json",
         timeout=4,
@@ -179,7 +179,7 @@ def has_bundled_version(profile_id: str) -> bool:
 def seed_user_profiles():
     """
     Called on first launch (empty user profiles dir) to populate PROFILES_DIR
-    from the TIGHC-Profiles GitHub repo. If the download fails (offline, etc.),
+    from the TIGHC Profiles GitHub repo. If the download fails (offline, etc.),
     falls back to the built-in Minecraft profile so the app always starts with
     at least one profile. Does nothing if the user already has profiles.
     """

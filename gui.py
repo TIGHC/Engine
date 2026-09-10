@@ -1094,7 +1094,7 @@ class App:
     def _on_restore_profile(self):
         """
         "Restore from GitHub..." button handler: downloads the currently
-        selected profile from the TIGHC-Profiles GitHub repo and overwrites
+        selected profile from the TIGHC Profiles GitHub repo and overwrites
         the user's local copy. Asks for confirmation first.
         """
         if not self.current_profile_id:
@@ -1102,7 +1102,7 @@ class App:
             return
         if not messagebox.askyesno(
             "Restore from GitHub",
-            f"Download '{self.current_profile_id}' from the TIGHC-Profiles GitHub repo and overwrite your local copy?\n\nThis cannot be undone.",
+            f"Download '{self.current_profile_id}' from the TIGHC Profiles GitHub repo and overwrite your local copy?\n\nThis cannot be undone.",
         ):
             return
         profile_id = self.current_profile_id
@@ -1122,7 +1122,7 @@ class App:
     def _on_update_profiles_from_github(self):
         """
         "Update profiles from GitHub" button handler: downloads any profiles
-        from the TIGHC-Profiles GitHub repo that aren't yet in the user's
+        from the TIGHC Profiles GitHub repo that aren't yet in the user's
         profiles dir. Existing user profiles are not overwritten.
         """
         self._enqueue_log("Checking GitHub for new profiles...")

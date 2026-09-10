@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.0.1** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.0.2** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 A haptic controller that links your keyboard/mouse input to a Buttplug/Intiface
 toy. Originally Minecraft-only, it now supports multiple game **profiles**,
@@ -82,7 +82,7 @@ tighc-gui.spec                    # PyInstaller build spec (see "Development" be
 pyproject.toml                    # project metadata/dependencies + pytest config
 .github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
 %APPDATA%\TIGHC\  (~/Library/Application Support/TIGHC/ on macOS, ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
-  profiles/                       # downloaded from TIGHC-Profiles on GitHub on first launch
+  profiles/                       # downloaded from TIGHC Profiles on GitHub on first launch
   configs/
     haptics.json                  # global settings (connection, panic key, smoothing, ...)
     devices.json                  # remembers a nickname for each connected motor/capability
@@ -102,7 +102,7 @@ the GUI are fully interchangeable - both just read/write the same files.
 
 Your profiles live in `%APPDATA%\TIGHC\profiles\` (`~/Library/Application Support/TIGHC/profiles/`
 on macOS, `~/.local/share/TIGHC/profiles/` on Linux). On first launch, TIGHC downloads all profiles from
-[TIGHC-Profiles](https://github.com/TIGHC/Profiles) on GitHub and
+[TIGHC Profiles](https://github.com/TIGHC/Profiles) on GitHub and
 seeds them there. Profiles you edit are never overwritten automatically.
 
 Each profile is a folder containing a single `profile.json` with the game's
@@ -112,8 +112,8 @@ so you can alt-tab between games and it just follows along.
 
 The easiest way to add a new profile is the GUI's "New profile..." button.
 Use "Update profiles from GitHub" in the Profiles tab to pick up any new
-profiles added to the TIGHC-Profiles repo. Want to share a profile you've
-made? Open a pull request on [TIGHC-Profiles](https://github.com/TIGHC/Profiles).
+profiles added to the TIGHC Profiles repo. Want to share a profile you've
+made? Open a pull request on [TIGHC Profiles](https://github.com/TIGHC/Profiles).
 
 Each binding in `profile.json` has:
 
