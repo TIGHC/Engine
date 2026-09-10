@@ -5,6 +5,15 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.7] - 2026-09-10
+
+### Changed
+- **Author link now points to `https://stuxie.dev`** instead of
+  `https://github.com/StuxieDev` - `src/metadata.py`'s `AUTHOR_URL` (used by
+  the GUI's About tab) and `README.md`'s footer link. The GitHub avatar
+  image (`github.com/StuxieDev.png`) is unaffected - that's still the only
+  place to fetch it from.
+
 ## [5.0.6] - 2026-09-10
 
 ### Fixed
