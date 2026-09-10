@@ -15,6 +15,7 @@ entry point has one place to import everything from:
   src/input.py           - keyboard/mouse normalization, focused-window lookup
   src/engine.py          - HapticsController, the engine itself
   src/steamgriddb.py     - SteamGridDB cover-art fetching/caching
+  src/updates.py         - GitHub update check
 
 This module isn't meant to be run directly - it's a library, imported by
 gui.py.
@@ -81,6 +82,7 @@ from src.profiles import (
 )
 from src.input import InputState, get_foreground_window_title, normalize_key
 from src.engine import HapticsController
+from src.updates import check_for_update
 from src.steamgriddb import (
     DEFAULT_STEAMGRIDDB_CONFIG,
     STEAMGRIDDB_API_BASE,

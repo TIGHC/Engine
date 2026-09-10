@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.3.0] - 2026-09-10
+
+### Added
+- **Update checker** - on startup, and via a new "Check for updates" button
+  on the About tab, TIGHC checks GitHub for a newer release
+  (`src/updates.py`, reading `VERSION.md` from `raw.githubusercontent.com`
+  - no auth, no API rate limits, same approach `src/profiles.py` already
+  uses). The startup check is silent unless an update is actually found, in
+  which case a clickable "Update available: vX.Y.Z" link appears in the
+  top bar, linking straight to that release on GitHub; the About tab's
+  button always reports a result either way (including "You're on the
+  latest version" when there's nothing new), so a manual check never looks
+  like it did nothing. Runs off the Tk main thread, same as every other
+  network call in this app - never blocks startup or the UI.
+
 ## [5.2.1] - 2026-09-10
 
 ### Changed

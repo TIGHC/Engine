@@ -58,6 +58,7 @@ from src.tighc import (
     HapticsController,
     VibeRange,
     __version__,
+    check_for_update,
     download_missing_profiles,
     has_bundled_version,
     load_haptics_config,
@@ -240,6 +241,39 @@ class App:
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
         self._log_poll_id = self.root.after(150, self._poll_log_queue)
         self._status_poll_id = self.root.after(400, self._poll_status)
+        self._check_for_updates()
+
+    def _check_for_updates(self, manual: bool = False):
+        """
+        Check GitHub for a newer TIGHC release in the background (never
+        blocks the UI - see src/updates.py). Called once at startup
+        (manual=False): silent unless an update is actually found, in which
+        case the top bar reveals a clickable link. Also wired to the About
+        tab's "Check for updates" button (manual=True), which always
+        reports a result there - either the same link, or a confirmation
+        that this is already the latest version - so a manual click never
+        looks like it did nothing.
+        """
+        if manual:
+            self.update_status_label.config(text="Checking...")
+
+        def worker():
+            result = check_for_update()
+
+            def on_done():
+                if result:
+                    self.update_link.config(text=f"Update available: v{result['version']}")
+                    self.update_link.bind("<Button-1>", lambda _e: webbrowser.open(result["url"]))
+                    if not self.update_link.winfo_ismapped():
+                        self.update_link.pack(side="right", padx=(0, 12))
+                    if manual:
+                        self.update_status_label.config(text="")
+                elif manual:
+                    self.update_status_label.config(text=f"You're on the latest version (v{__version__}).")
+
+            self.root.after(0, on_done)
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def _apply_style(self, root):
         """
@@ -298,6 +332,10 @@ class App:
         top_bar.pack(fill="x", padx=PADX // 2, pady=(PADY // 2, 0))
         self.theme_toggle_btn = ttk.Button(top_bar, text=self._theme_toggle_label(), command=self._on_toggle_theme)
         self.theme_toggle_btn.pack(side="right")
+        # Hidden until _check_for_updates() finds a newer release (see
+        # __init__) - not packed here, so it takes no space at all until
+        # there's actually something to show.
+        self.update_link = ttk.Label(top_bar, style="Accent.TLabel", cursor="hand2")
         # Visible from every tab, not just Devices/Run - kept current by
         # _poll_status() (same 400ms poll that already drove the Run tab's
         # "Live status" label) so there's always a clear, hard-to-miss
@@ -2247,6 +2285,13 @@ class App:
         ttk.Label(body, text=f"{PROJECT_SHORT_NAME} - version {__version__}", font=("Segoe UI", 10, "bold")).pack(
             anchor="w"
         )
+        update_row = ttk.Frame(body)
+        update_row.pack(anchor="w", pady=(4, 0))
+        ttk.Button(update_row, text="Check for updates", command=lambda: self._check_for_updates(manual=True)).pack(
+            side="left"
+        )
+        self.update_status_label = ttk.Label(update_row, text="", style="Hint.TLabel")
+        self.update_status_label.pack(side="left", padx=(8, 0))
         ttk.Label(
             body,
             text=(
