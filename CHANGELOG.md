@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.0] - 2026-09-10
+
+### Changed
+- **New icon: a controller silhouette with pulse waves, replacing the
+  bullseye/target rings.** The old mark read as archery or aim-assist, not
+  as a haptics controller - the new one shows the actual mechanism (game
+  input becomes vibration) instead. `assets/icon.png` and `icon.ico`
+  regenerated from the new mark (same purple, no gradients, drawn as flat
+  vector geometry rather than a photo); `assets/logo.png`'s icon half
+  swapped in, wordmark and tagline pixels unchanged.
+- **`README.md`'s author byline now reads "A StuxieDev Project"** (was
+  "Built & Maintained by StuxieDev"), linking to
+  `https://projects.stuxie.dev` instead of `https://stuxie.dev` - the
+  avatar image is unchanged, just repositioned ahead of the new phrasing.
+
 ## [5.0.7] - 2026-09-10
 
 ### Changed
