@@ -5,6 +5,18 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.6] - 2026-09-10
+
+### Changed
+- **About tab's "Written & Maintained by StuxieDev" link now points to
+  https://stuxie.dev** (was `https://projects.stuxie.dev`), matching the
+  READMEs' corrected byline convention: the personal-authorship byline
+  links to the person, the separate "A StuxieDev Project" link links to
+  the projects index.
+- **Added a small "A StuxieDev Project" link below it**, linking to
+  `https://projects.stuxie.dev`, mirroring the website footer's separate
+  disclaimer-adjacent link.
+
 ## [5.1.5] - 2026-09-10
 
 ### Fixed

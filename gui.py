@@ -44,6 +44,7 @@ from src import tighc
 from src.tighc import (
     APP_ROOT,
     AUTHOR_NAME,
+    AUTHOR_URL,
     CONFIGS_DIR,
     PROFILES_DIR,
     PROJECT_NAME,
@@ -2222,7 +2223,7 @@ class App:
         repo_link.bind("<Button-1>", lambda _e: webbrowser.open(REPO_URL))
 
         author_row = ttk.Frame(body)
-        author_row.pack(anchor="w", pady=(2, 10))
+        author_row.pack(anchor="w", pady=(2, 0))
         ttk.Label(author_row, text="Written & Maintained by ").pack(side="left")
         avatar_path = APP_ROOT / "assets" / "author.png"
         if avatar_path.exists():
@@ -2232,7 +2233,16 @@ class App:
             ttk.Label(author_row, image=self._about_avatar_image).pack(side="left", padx=(0, 6))
         author_link = ttk.Label(author_row, text=AUTHOR_NAME, foreground=ACCENT_COLOR, cursor="hand2")
         author_link.pack(side="left")
-        author_link.bind("<Button-1>", lambda _e: webbrowser.open(PROJECTS_URL))
+        author_link.bind("<Button-1>", lambda _e: webbrowser.open(AUTHOR_URL))
+
+        project_row = ttk.Frame(body)
+        project_row.pack(anchor="w", pady=(0, 10))
+        project_link = ttk.Label(
+            project_row, text="A StuxieDev Project", style="Hint.TLabel", cursor="hand2",
+            font=("Segoe UI", 9, "underline"),
+        )
+        project_link.pack(side="left")
+        project_link.bind("<Button-1>", lambda _e: webbrowser.open(PROJECTS_URL))
 
         changelog_header = ttk.Frame(body)
         changelog_header.pack(fill="x", pady=(4, 4))
