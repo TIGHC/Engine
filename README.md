@@ -9,13 +9,14 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.0.3** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.0.4** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
-A haptic controller that links your keyboard/mouse input to a Buttplug/Intiface
-toy. Originally Minecraft-only, it now supports multiple game **profiles**,
-each with its own keybinds, intensity ranges, and per-motor device targeting,
-driven from an interactive GUI. As much as I hate to say it this was made
-with grok, chat gpt, and some claude. (I wish I was better at coding)
+Haptic feedback for your games, driven by the keys you're already pressing.
+
+TIGHC links your keyboard/mouse input to a Buttplug/Intiface toy. Sneak,
+sprint, attack, jump — each action can drive its own motor, at its own
+intensity, per game. As much as I hate to say it this was made with grok,
+chat gpt, and some claude. (I wish I was better at coding)
 
 Website: https://tighc.stuxie.dev  
 Repository: https://github.com/TIGHC/Engine  

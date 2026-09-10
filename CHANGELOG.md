@@ -5,6 +5,16 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.4] - 2026-09-10
+
+### Changed
+- **`README.md`'s project description now matches the website's hero text**
+  word-for-word ("Haptic feedback for your games, driven by the keys you're
+  already pressing." / "TIGHC links your keyboard/mouse input to a
+  Buttplug/Intiface toy. Sneak, sprint, attack, jump — each action can
+  drive its own motor, at its own intensity, per game."), replacing the
+  README's own differently-worded description.
+
 ## [5.0.3] - 2026-09-10
 
 ### Changed
