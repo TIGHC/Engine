@@ -22,6 +22,7 @@ from pathlib import Path
 import PyInstaller.__main__
 
 IS_WINDOWS = sys.platform == "win32"
+IS_MACOS = sys.platform == "darwin"
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VERSION = (REPO_ROOT / "VERSION.md").read_text(encoding="utf-8").strip()
@@ -36,11 +37,14 @@ def _add_data(src: Path, dest: str) -> str:
 
 
 def _icon_args() -> list[str]:
-    # No assets/icon.icns exists for TIGHC, so - unlike a Windows build -
-    # macOS/Linux builds just go without an embedded icon.
-    if not IS_WINDOWS:
+    # PyInstaller doesn't support icon embedding for plain Linux/ELF
+    # binaries, so a Linux build just goes without one.
+    if IS_WINDOWS:
+        icon = REPO_ROOT / "assets" / "icon.ico"
+    elif IS_MACOS:
+        icon = REPO_ROOT / "assets" / "icon.icns"
+    else:
         return []
-    icon = REPO_ROOT / "assets" / "icon.ico"
     return [f"--icon={icon}"] if icon.is_file() else []
 
 
@@ -72,8 +76,8 @@ COMMON_ARGS = [
 
 
 def build_gui() -> None:
-    # The About tab and age-gate read assets/logo.png (and icon.png/.ico),
-    # CHANGELOG.md, and VERSION.md at runtime via src.paths.APP_ROOT (which
+    # The About tab and age-gate read assets/logo.png (and icon.png/.ico/
+    # .icns), CHANGELOG.md, and VERSION.md at runtime via src.paths.APP_ROOT (which
     # resolves to sys._MEIPASS in a frozen build) - bundle them as data so
     # those lookups succeed instead of silently no-op'ing (missing icon/
     # logo/blank changelog) in the packaged exe.

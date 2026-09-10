@@ -5,6 +5,28 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.3.1] - 2026-09-10
+
+### Fixed
+- **Window title now reads "TIGHC (The Intiface Game Haptics Controller) —
+  vX.Y.Z"** (was "TIGHC - The Intiface Game Haptics Controller (vX.Y.Z)")
+  - the full name in parens, an em dash before the version, matching the
+  format asked for.
+- **Taskbar/Alt-Tab icon still showed Tk's stock feather** instead of
+  TIGHC's icon on Windows. `iconphoto()` alone (still needed for Linux/
+  macOS) doesn't reliably replace it there - added `iconbitmap()` with
+  `assets/icon.ico` on Windows specifically, which does. Verified against
+  a real PyInstaller build's taskbar button, not just running from source.
+
+### Added
+- **`assets/icon.icns`**, so `scripts/build_exe.py` can now embed a proper
+  icon in macOS builds too (previously macOS/Linux builds shipped with no
+  icon at all, since only `icon.ico` existed for Windows). Generated from
+  the existing `icon.png` upscaled to 1024x1024 and written via Pillow's
+  ICNS support - contains the full standard Apple icon size set (16 through
+  512, with @2x variants), same as `iconutil` would produce. Same file,
+  byte-for-byte, in Profiles' `assets/` copy - see its changelog.
+
 ## [5.3.0] - 2026-09-10
 
 ### Added

@@ -213,7 +213,7 @@ class App:
         before this ever runs.
         """
         self.root = root
-        root.title(f"{PROJECT_SHORT_NAME} - {PROJECT_NAME} (v{__version__})")
+        root.title(f"{PROJECT_SHORT_NAME} ({PROJECT_NAME}) — v{__version__}")
         root.geometry("1040x720")
         root.minsize(860, 600)
 
@@ -2652,10 +2652,19 @@ def main():
     # every Toplevel that doesn't set its own inherit it too, including the
     # age gate below - without this, every window just shows Tk's stock
     # feather icon instead of anything TIGHC-specific.
+    #
+    # iconphoto() alone covers Linux/macOS, but on Windows it doesn't
+    # reliably replace the taskbar/Alt-Tab icon (which Tk otherwise falls
+    # back to its own stock feather bitmap for) - only iconbitmap() with a
+    # real .ico does that there, so both are set when running on Windows.
     icon_path = APP_ROOT / "assets" / "icon.png"
     if icon_path.exists():
         root.icon_image = tk.PhotoImage(file=str(icon_path))  # kept as an attribute so it isn't garbage-collected
         root.iconphoto(True, root.icon_image)
+    if sys.platform == "win32":
+        icon_ico_path = APP_ROOT / "assets" / "icon.ico"
+        if icon_ico_path.exists():
+            root.iconbitmap(default=str(icon_ico_path))
 
     # Apply the same sv_ttk look the main App uses (App._apply_style() will
     # re-apply it once App is constructed below) so the age gate isn't stuck
