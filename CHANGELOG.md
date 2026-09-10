@@ -5,6 +5,17 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.5] - 2026-09-10
+
+### Fixed
+- **`assets/icon.png`/`icon.ico` had the same baked-in low-alpha haze as
+  `logo.png` did before v5.0.1** - never actually fixed for these two,
+  since that pass only touched `logo.png`. Same fix applied: thresholded
+  out any pixel with alpha <= 20. Visible as a soft grey box/halo around
+  the icon on light backgrounds in particular (per a report against the
+  website, which shares this file) - `icon.ico` regenerated from the
+  cleaned source at its original size set (16/32/48/64/128/256).
+
 ## [5.0.4] - 2026-09-10
 
 ### Changed
