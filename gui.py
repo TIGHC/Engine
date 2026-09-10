@@ -2222,7 +2222,7 @@ class App:
 
         author_row = ttk.Frame(body)
         author_row.pack(anchor="w", pady=(2, 10))
-        ttk.Label(author_row, text="A ").pack(side="left")
+        ttk.Label(author_row, text="Written & Maintained by ").pack(side="left")
         avatar_path = APP_ROOT / "assets" / "author.png"
         if avatar_path.exists():
             avatar_full = tk.PhotoImage(file=str(avatar_path))
@@ -2232,7 +2232,6 @@ class App:
         author_link = ttk.Label(author_row, text=AUTHOR_NAME, foreground=ACCENT_COLOR, cursor="hand2")
         author_link.pack(side="left")
         author_link.bind("<Button-1>", lambda _e: webbrowser.open(PROJECTS_URL))
-        ttk.Label(author_row, text=" Project").pack(side="left")
 
         changelog_header = ttk.Frame(body)
         changelog_header.pack(fill="x", pady=(4, 4))

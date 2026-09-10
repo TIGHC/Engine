@@ -5,6 +5,16 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.1.2] - 2026-09-10
+
+### Changed
+- **Reverted the "A StuxieDev Project" byline wording from v5.1.1** - the
+  avatar icon belongs specifically with "Written & Maintained by [icon]
+  StuxieDev", not "A [icon] StuxieDev Project". `README.md`'s footer and
+  the GUI's About tab now both read "Written & Maintained by StuxieDev",
+  avatar between "by" and "StuxieDev", still linking to `PROJECTS_URL`
+  (`https://projects.stuxie.dev`).
+
 ## [5.1.1] - 2026-09-10
 
 ### Changed

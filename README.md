@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.1.1** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.1.2** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 Haptic feedback for your games, driven by the keys you're already pressing.
 
@@ -270,4 +270,4 @@ Licensed under the [GPL-3.0-or-later](LICENSE.md).
 
 ---
 
-*A <img src="https://github.com/StuxieDev.png" height="14" alt="StuxieDev" valign="middle"> [StuxieDev](https://projects.stuxie.dev) Project.*
+*Written & Maintained by <img src="https://github.com/StuxieDev.png" height="14" alt="StuxieDev" valign="middle"> [StuxieDev](https://projects.stuxie.dev).*
