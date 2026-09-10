@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.0.5** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.0.6** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 Haptic feedback for your games, driven by the keys you're already pressing.
 

@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.6] - 2026-09-10
+
+### Fixed
+- **`assets/logo.png`/`icon.png`/`icon.ico` still had a visible dark
+  speckled fringe around every letter/ring** - v5.0.1's and v5.0.5's fixes
+  only thresholded out very-low-alpha pixels (`alpha <= 20`), which caught
+  the faint haze extending to the canvas edges but missed a second,
+  separate shadow layer sitting right at the shape edges with real,
+  visible opacity (up to ~56%, RGB around (15-22, 20-22, 0) - nowhere near
+  the logo's actual purple). Confirmed with a 3x-scaled before/after
+  comparison. Fixed properly this time: any pixel with alpha > 0 whose RGB
+  is dark-and-not-purple (`max(r,g,b) < 40`) is zeroed, regardless of its
+  alpha level - removes both the outer haze and the inner shadow fringe in
+  one pass. `icon.ico` regenerated from the recleaned source.
+
 ## [5.0.5] - 2026-09-10
 
 ### Fixed
