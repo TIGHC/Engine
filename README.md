@@ -9,7 +9,7 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 5.0.0** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 5.0.1** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 A haptic controller that links your keyboard/mouse input to a Buttplug/Intiface
 toy. Originally Minecraft-only, it now supports multiple game **profiles**,

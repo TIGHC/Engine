@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.0.1] - 2026-09-10
+
+### Fixed
+- `assets/logo.png` had a large baked-in low-alpha haze (both near-black and
+  near-white, likely leftover shadow/glow layers from the original export)
+  extending all the way to the canvas edges - invisible on a white
+  background, but visible as a dark smudge/box around the logo on any dark
+  background (the website's header/nav, for one) and as ~175px of dead
+  space on the right of the 640x160 canvas. Thresholded out any pixel with
+  alpha <= 20 and cropped to the actual content, producing a clean
+  461x132 image with a true transparent background. Same file, byte-for-byte,
+  in Website's and Profiles' `assets/` copies - see their changelogs.
+
 ## [5.0.0] - 2026-09-10
 
 ### Removed
