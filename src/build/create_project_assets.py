@@ -192,9 +192,15 @@ def main() -> None:
         icon_base.save(WEBSITE_ASSETS / "favicon.ico", sizes=[(s, s) for s in favicon_sizes])
         icon_base.save(WEBSITE_ASSETS / "icon.png")
         logo.save(WEBSITE_ASSETS / "logo.png")
+        # Also written at the site root: browsers request /favicon.ico
+        # directly as a fallback, regardless of the <link rel="icon"> tag
+        # in <head> pointing at assets/favicon.ico.
+        website_root = WEBSITE_ASSETS.parent
+        icon_base.save(website_root / "favicon.ico", sizes=[(s, s) for s in favicon_sizes])
         print(
             f"Wrote {WEBSITE_ASSETS / 'favicon.ico'}, "
-            f"{WEBSITE_ASSETS / 'icon.png'}, {WEBSITE_ASSETS / 'logo.png'}"
+            f"{WEBSITE_ASSETS / 'icon.png'}, {WEBSITE_ASSETS / 'logo.png'}, "
+            f"{website_root / 'favicon.ico'}"
         )
     else:
         print(f"Skipped Website assets - no sibling checkout at {WEBSITE_ASSETS}")
