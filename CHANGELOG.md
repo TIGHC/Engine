@@ -5,6 +5,23 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.1.0] - 2026-09-12
+
+### Added
+- **`src/build/create_project_assets.py`**, matching the sibling TWRAR/
+  TS4RLS projects' convention: reproduces the icon/logo (a purple, fully
+  rounded controller body with a transparent-cutout D-pad cross and two
+  face buttons, plus two "haptic wave" ticks) in code instead of only
+  existing as hand-made PNGs, so it can be regenerated/tweaked going
+  forward. `assets/icon.png`/`icon.ico`/`icon.icns`/`logo.png` regenerated
+  from it (visually unchanged); also now writes the sibling Website repo's
+  matching `icon.png`/`logo.png`/`favicon.ico` directly.
+- **`assets/steam/`** and **`src/build/create_steam_assets.py`**, matching
+  the sibling TWRAR/TS4RLS projects' Steam library artwork generator
+  (grid capsules, hero, logo, icon) built from `icon.png`/`logo.png`.
+  TIGHC has no Steam store listing yet, but the assets are still useful
+  for a non-Steam-game shortcut.
+
 ## [6.0.1] - 2026-09-12
 
 ### Changed

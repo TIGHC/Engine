@@ -79,6 +79,9 @@ src/
   updates.py                 # GitHub update check (About tab + startup)
   build/
     create_release_files.py  # PyInstaller build script (see "Development" below)
+    create_project_assets.py # regenerates assets/icon.png/.ico/.icns/logo.png
+                              # (and the sibling Website repo's copies)
+    create_steam_assets.py   # regenerates assets/steam/ from icon.png/logo.png
   gui/                       # PySide6/Qt GUI
     theme.py                 # QSS light/dark tokens matching tighc.stuxie.dev's style.css
     age_gate.py               # the 18+ confirmation dialog
@@ -95,6 +98,7 @@ assets/
   logo.png                    # About tab banner / age-gate logo
   author.png                  # avatar next to the author link on the About tab
   checkbox_check.png          # QCheckBox's checked-state icon (see src/gui/theme.py)
+  steam/                      # Steam library artwork - see create_steam_assets.py above
 tests/                        # pytest suite - see "Development" below
 pyproject.toml                # project metadata/dependencies + pytest config
 requirements.txt               # runtime dependencies (same list as pyproject.toml's)

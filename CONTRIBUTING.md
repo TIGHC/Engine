@@ -46,6 +46,10 @@ manually:
 - If you touched Linux-specific code (`src/input.py`'s X11 path), test on
   an actual X11 session where possible - see
   [the Linux & Steam Deck guide](https://tighc.stuxie.dev/guides/linux).
+- If `assets/icon.png` or `assets/logo.png` changed, regenerate them with
+  `python src/build/create_project_assets.py` (also refreshes the sibling
+  Website repo's copies), then `python src/build/create_steam_assets.py`
+  to refresh `assets/steam/` to match.
 
 CI (`.github/workflows/ci.yml`) runs the same test suite on Windows and Linux
 for every push/PR, and builds a standalone GUI executable (via
