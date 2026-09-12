@@ -5,6 +5,11 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.3.3] - 2026-09-12
+
+### Fixed
+- README's version line was one release behind (`5.3.1`, actual `5.3.2`).
+
 ## [5.3.2] - 2026-09-12
 
 ### Changed
