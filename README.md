@@ -61,6 +61,16 @@ every tagged release (see [Quick start](#quick-start) above) - actual Steam
 Deck **Game Mode** support (as opposed to Desktop Mode, which already works
 today) is still a roadmap item; see the Linux guide's note on this.
 
+## Steam artwork
+
+`assets/steam/` has a full set of custom Steam library artwork (grid
+capsules, hero, logo, icon) for adding TIGHC to your Steam library as a
+non-Steam game.
+
+**[⬇ Download TIGHC_Steam_Assets.zip](https://github.com/TIGHC/Engine/raw/steam_assets/TIGHC_Steam_Assets.zip)**
+— always up to date with the latest release, no need to clone the repo.
+Also available as an asset on any [Release](https://github.com/TIGHC/Engine/releases).
+
 ## How it's organized
 
 ```

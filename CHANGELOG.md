@@ -5,6 +5,16 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.2.0] - 2026-09-13
+
+### Added
+- **`TIGHC_Steam_Assets.zip`**, matching the sibling TWRAR/TS4RLS projects:
+  `.github/workflows/ci.yml` gets a `steam-assets` job (tag-triggered,
+  alongside `build`) that zips `assets/steam/` and publishes it to the
+  `steam_assets` branch, plus attaches it to the GitHub Release. Until
+  now `assets/steam/` (added in v6.1.0) had no CI job and no documented
+  download — a new **Steam artwork** README section links the zip.
+
 ## [6.1.1] - 2026-09-13
 
 ### Fixed

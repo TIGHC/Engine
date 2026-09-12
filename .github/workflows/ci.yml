@@ -4,8 +4,10 @@ name: CI
 # versions), and - only when a `vX.Y.Z` tag is pushed (see commit.sh/
 # commit.bat, which create that tag from VERSION.md) - builds a standalone
 # GUI executable for Windows, Linux, and macOS via src/build/create_release_files.py
-# (the same script a contributor runs locally) and attaches them to a
-# GitHub Release. The release job depends on the test job passing on the
+# (the same script a contributor runs locally), zips assets/steam/ into
+# TIGHC_Steam_Assets.zip and publishes it to the steam_assets branch, and
+# attaches both to a GitHub Release. The release job depends on the build
+# and steam-assets jobs, which both depend on the test job passing on the
 # exact commit being tagged, so a broken build is never published.
 
 on:
@@ -87,8 +89,39 @@ jobs:
           name: TIGHC-${{ matrix.asset_name }}
           path: dist_out/*
 
+  steam-assets:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build TIGHC_Steam_Assets.zip
+        run: |
+          mkdir -p dist_out
+          cd assets/steam
+          zip -r ../../dist_out/TIGHC_Steam_Assets.zip .
+
+      - name: Publish to steam_assets branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan steam_assets
+          git reset --hard
+          cp dist_out/TIGHC_Steam_Assets.zip .
+          git add TIGHC_Steam_Assets.zip
+          git commit -m "Update Steam assets (${{ github.ref_name }})"
+          git push origin steam_assets --force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: steam-assets
+          path: dist_out/TIGHC_Steam_Assets.zip
+
   release:
-    needs: build
+    needs: [build, steam-assets]
     runs-on: ubuntu-latest
     # The default GITHUB_TOKEN is read-only unless a job explicitly asks for
     # more - without this, softprops/action-gh-release fails with a 403
