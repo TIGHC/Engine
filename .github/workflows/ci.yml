@@ -3,11 +3,10 @@ name: CI
 # Runs the pytest suite on every push/PR (across OSes and supported Python
 # versions), and - only when a `vX.Y.Z` tag is pushed (see commit.sh/
 # commit.bat, which create that tag from VERSION.md) - builds a standalone
-# GUI executable for Windows, Linux, and macOS via build.sh (the same
-# script a contributor runs locally - see scripts/build_exe.py for the
-# actual PyInstaller invocation) and attaches them to a GitHub Release.
-# The release job depends on the test job passing on the exact commit
-# being tagged, so a broken build is never published.
+# GUI executable for Windows, Linux, and macOS via src/scripts/build_exe.py
+# (the same script a contributor runs locally) and attaches them to a
+# GitHub Release. The release job depends on the test job passing on the
+# exact commit being tagged, so a broken build is never published.
 
 on:
   push:
@@ -55,13 +54,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Tk (Linux only - needed to bundle tkinter for the GUI build)
+      - name: Install Linux Qt runtime libraries
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
 
-      - name: Build with build.sh
+      - name: Build executable
         shell: bash
-        run: bash build.sh
+        run: python src/scripts/build_exe.py
 
       - name: Set asset path
         shell: bash

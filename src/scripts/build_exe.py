@@ -1,9 +1,10 @@
 """Builds a standalone TIGHC executable with PyInstaller, for whatever
-platform this is run on.
+platform this is run on, and renames it to match a release download
+(TIGHC-<os>-vX.Y.Z).
 
-Run with: python scripts/build_exe.py
-Requires PyInstaller: pip install pyinstaller (build.sh/build.bat do this
-for you - see requirements.txt for the app's own runtime dependencies).
+Run with: python src/scripts/build_exe.py
+Installs its own dependencies (requirements.txt + PyInstaller) first, no
+separate build.bat/build.sh wrapper or manual `pip install` needed.
 
 PyInstaller can't cross-compile - run this on each platform (Windows,
 Linux, macOS) you want a native build for; that's also what the CI "build"
@@ -16,15 +17,14 @@ a byproduct, not a file this repo tracks.
 """
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
-
-import PyInstaller.__main__
 
 IS_WINDOWS = sys.platform == "win32"
 IS_MACOS = sys.platform == "darwin"
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 VERSION = (REPO_ROOT / "VERSION.md").read_text(encoding="utf-8").strip()
 DIST_DIR = REPO_ROOT / "dist"
 BUILD_DIR = REPO_ROOT / "build"
@@ -75,12 +75,24 @@ COMMON_ARGS = [
 ]
 
 
-def build_gui() -> None:
+def ensure_dependencies() -> None:
+    # No build.bat/build.sh wrapper to install these first - this script
+    # is run directly (`python src/scripts/build_exe.py`), so it installs
+    # its own runtime + build dependencies before importing PyInstaller.
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "-r", str(REPO_ROOT / "requirements.txt"), "-q"]
+    )
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pyinstaller", "-q"])
+
+
+def build_gui() -> Path:
+    import PyInstaller.__main__
+
     # The About tab and age-gate read assets/logo.png (and icon.png/.ico/
-    # .icns), CHANGELOG.md, and VERSION.md at runtime via src.paths.APP_ROOT (which
-    # resolves to sys._MEIPASS in a frozen build) - bundle them as data so
-    # those lookups succeed instead of silently no-op'ing (missing icon/
-    # logo/blank changelog) in the packaged exe.
+    # .icns), CHANGELOG.md, and VERSION.md at runtime via src.paths.APP_ROOT
+    # (which resolves to sys._MEIPASS in a frozen build) - bundle them as
+    # data so those lookups succeed instead of silently no-op'ing (missing
+    # icon/logo/blank changelog) in the packaged exe.
     PyInstaller.__main__.run([
         str(REPO_ROOT / "gui.py"),
         "--name=TIGHC",
@@ -93,12 +105,30 @@ def build_gui() -> None:
         *COMMON_ARGS,
     ])
 
+    ext = ".exe" if IS_WINDOWS else ""
+    built_path = DIST_DIR / ("TIGHC" + ext)
+    if not built_path.is_file():
+        raise SystemExit(f"Build finished but executable was not found: {built_path}")
+
+    # Rename to match a release download (TIGHC-<os>-vX.Y.Z) so a local
+    # build looks like the real thing - same convention CI's "Set asset
+    # path" step expects.
+    if IS_WINDOWS:
+        os_name = "windows"
+    elif IS_MACOS:
+        os_name = "macos"
+    else:
+        os_name = "linux"
+    dest_path = DIST_DIR / f"TIGHC-{os_name}-v{VERSION}{ext}"
+    built_path.replace(dest_path)
+    return dest_path
+
 
 def main() -> None:
     print(f"Building TIGHC v{VERSION} standalone executable for {sys.platform}...")
-    build_gui()
-    ext = ".exe" if IS_WINDOWS else ""
-    print(f"\nDone. Output: {DIST_DIR / ('TIGHC' + ext)}")
+    ensure_dependencies()
+    dest_path = build_gui()
+    print(f"\nDone. Output: {dest_path}")
 
 
 if __name__ == "__main__":

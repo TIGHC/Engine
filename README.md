@@ -28,7 +28,7 @@ Prefer not to install Python at all? Grab a standalone executable from the
 **[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
 `TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` / `TIGHC-macos-vX.Y.Z`.
 These are built automatically by CI from this same source (see
-`.github/workflows/ci.yml` and `scripts/build_exe.py`) - no separate
+`.github/workflows/ci.yml` and `src/scripts/build_exe.py`) - no separate
 download needed. You can also browse every release, with download
 links per platform, on the [Releases page](https://tighc.stuxie.dev/releases).
 
@@ -77,10 +77,10 @@ src/
   metadata.py                     # project name/repo URL
   version.py                      # version number + get_version()/get_version_tuple()
   updates.py                      # GitHub update check (About tab + startup)
+  scripts/build_exe.py            # PyInstaller build script (see "Development" below)
 gui.py                            # interactive configurator + launcher (imports src/tighc.py)
 assets/                           # icon.png/icon.ico/icon.icns (window/taskbar/macOS icon) and logo.png (About tab banner)
 tests/                            # pytest suite - see "Development" below
-scripts/build_exe.py              # PyInstaller build script, run by build.sh/build.bat (see "Development" below)
 pyproject.toml                    # project metadata/dependencies + pytest config
 .github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
 %APPDATA%\TIGHC\  (~/Library/Application Support/TIGHC/ on macOS, ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
@@ -247,9 +247,9 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
-./build.sh                          # or build.bat on Windows - installs pyinstaller if
-                                     # missing, builds, and names the output like a release
-                                     # download: dist/TIGHC-<os>-vX.Y.Z(.exe)
+python src/scripts/build_exe.py     # installs pyinstaller if missing, builds, and names
+                                     # the output like a release download:
+                                     # dist/TIGHC-<os>-vX.Y.Z(.exe)
 ```
 
 The test suite never touches your real `%APPDATA%\TIGHC` (or

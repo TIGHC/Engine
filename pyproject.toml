@@ -16,12 +16,13 @@ dependencies = [
     "buttplug",
     "pynput",
     "sv_ttk",
+    "PySide6>=6.7",
     "python-xlib; sys_platform == 'linux'",
 ]
 
 # This project is run from a clone (`python gui.py`) or as a
 # PyInstaller-built executable (see .github/workflows/ci.yml and
-# scripts/build_exe.py) - it isn't published to PyPI, so there are no
+# src/scripts/build_exe.py) - it isn't published to PyPI, so there are no
 # [project.scripts] console-script entry points: gui.py lives at the
 # repo root (not inside the `src` package) and imports it as
 # `from src.tighc import ...`, which only resolves when it's run as a
@@ -34,8 +35,9 @@ Homepage = "https://tighc.stuxie.dev"
 Repository = "https://github.com/TIGHC/Engine"
 Changelog = "https://github.com/TIGHC/Engine/blob/main/CHANGELOG.md"
 
-[tool.setuptools]
-packages = ["src"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
 
 [tool.setuptools.dynamic]
 # Single source of truth for the version - see src/version.py, which reads
