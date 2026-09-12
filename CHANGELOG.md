@@ -5,6 +5,20 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.1.1] - 2026-09-13
+
+### Fixed
+- **`create_release_files.py` renamed the local build to
+  `TIGHC-<os>-vX.Y.Z(.exe)`** — the sibling TWRAR/TS4RLS projects' own
+  build scripts leave the output as plain `TWRAR`/`TS4RLS` (no OS or
+  version in the name) and only add that when assembling release assets
+  in CI. `build_gui()` now does the same, returning plain
+  `dist/TIGHC.exe`/`TIGHC`/`TIGHC.app`; `.github/workflows/ci.yml` gained
+  a "Collect build artifacts" step (matching the sibling projects'
+  wording and per-OS `.exe`/`.app`-as-zip/plain-binary handling) that does
+  the `TIGHC-windows.exe`/`TIGHC-linux`/`TIGHC-macos.zip` renaming for the
+  GitHub Release download instead.
+
 ## [6.1.0] - 2026-09-12
 
 ### Added

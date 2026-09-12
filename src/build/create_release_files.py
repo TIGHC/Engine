@@ -1,6 +1,5 @@
 """Builds a standalone TIGHC executable with PyInstaller, for whatever
-platform this is run on, and renames it to match a release download
-(TIGHC-<os>-vX.Y.Z).
+platform this is run on.
 
 Run with: python src/build/create_release_files.py
 Installs its own dependencies (requirements.txt + PyInstaller) first, no
@@ -105,23 +104,20 @@ def build_gui() -> Path:
         *COMMON_ARGS,
     ])
 
-    ext = ".exe" if IS_WINDOWS else ""
-    built_path = DIST_DIR / ("TIGHC" + ext)
-    if not built_path.is_file():
+    if IS_MACOS:
+        # --windowed produces an app bundle on macOS, not a flat binary.
+        built_path = DIST_DIR / "TIGHC.app"
+    else:
+        ext = ".exe" if IS_WINDOWS else ""
+        built_path = DIST_DIR / ("TIGHC" + ext)
+    if not built_path.exists():
         raise SystemExit(f"Build finished but executable was not found: {built_path}")
 
-    # Rename to match a release download (TIGHC-<os>-vX.Y.Z) so a local
-    # build looks like the real thing - same convention CI's "Set asset
-    # path" step expects.
-    if IS_WINDOWS:
-        os_name = "windows"
-    elif IS_MACOS:
-        os_name = "macos"
-    else:
-        os_name = "linux"
-    dest_path = DIST_DIR / f"TIGHC-{os_name}-v{VERSION}{ext}"
-    built_path.replace(dest_path)
-    return dest_path
+    # Left as plain "TIGHC"/"TIGHC.exe" - no os/version in the name, same
+    # as the sibling TWRAR/TS4RLS projects. CI's own "Collect build
+    # artifacts" step (.github/workflows/ci.yml) does that renaming when
+    # assembling release assets; a local build has no reason to.
+    return built_path
 
 
 def main() -> None:

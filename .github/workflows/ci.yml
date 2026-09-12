@@ -39,13 +39,19 @@ jobs:
         run: pytest -v
 
   build:
-    name: Build executable (${{ matrix.os }})
+    name: Build executable (${{ matrix.asset_name }})
     if: startsWith(github.ref, 'refs/tags/v')
     needs: test
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            asset_name: windows
+          - os: ubuntu-latest
+            asset_name: linux
+          - os: macos-latest
+            asset_name: macos
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -62,20 +68,24 @@ jobs:
         shell: bash
         run: python src/build/create_release_files.py
 
-      - name: Set asset path
+      - name: Collect build artifacts
         shell: bash
         run: |
-          version="$(tr -d '[:space:]' < VERSION.md)"
-          os_name="windows"
-          ext=".exe"
-          if [ "${{ runner.os }}" = "Linux" ]; then os_name="linux"; ext=""; fi
-          if [ "${{ runner.os }}" = "macOS" ]; then os_name="macos"; ext=""; fi
-          echo "ASSET_PATH=dist/TIGHC-${os_name}-v${version}${ext}" >> "$GITHUB_ENV"
+          mkdir -p dist_out
+          if [ -f "dist/TIGHC.exe" ]; then
+            cp "dist/TIGHC.exe" "dist_out/TIGHC-${{ matrix.asset_name }}.exe"
+          elif [ -d "dist/TIGHC.app" ]; then
+            # --windowed on macOS produces an app bundle, not a flat binary.
+            zip -r -q "dist_out/TIGHC-${{ matrix.asset_name }}.zip" "dist/TIGHC.app"
+          elif [ -f "dist/TIGHC" ]; then
+            cp "dist/TIGHC" "dist_out/TIGHC-${{ matrix.asset_name }}"
+          fi
+          ls -la dist_out
 
       - uses: actions/upload-artifact@v4
         with:
-          name: TIGHC-${{ runner.os }}
-          path: ${{ env.ASSET_PATH }}
+          name: TIGHC-${{ matrix.asset_name }}
+          path: dist_out/*
 
   release:
     needs: build

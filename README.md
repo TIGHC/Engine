@@ -26,7 +26,7 @@ License: [GPL-3.0-or-later](LICENSE.md)
 
 Prefer not to install Python at all? Grab a standalone executable from the
 **[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
-`TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` / `TIGHC-macos-vX.Y.Z`.
+`TIGHC-windows.exe` / `TIGHC-linux` / `TIGHC-macos.zip`.
 These are built automatically by CI from this same source (see
 `.github/workflows/ci.yml` and `src/build/create_release_files.py`) - no separate
 download needed. You can also browse every release, with download
@@ -231,9 +231,12 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
-python src/build/create_release_files.py  # installs pyinstaller if missing, builds, and names
-                                           # the output like a release download:
-                                           # dist/TIGHC-<os>-vX.Y.Z(.exe)
+python src/build/create_release_files.py  # installs pyinstaller if missing, builds
+                                           # dist/TIGHC.exe (dist/TIGHC on Linux,
+                                           # dist/TIGHC.app on macOS) - no OS/version
+                                           # in the name; CI's own "Collect build
+                                           # artifacts" step adds that for release
+                                           # downloads (TIGHC-windows.exe, etc.)
 ```
 
 The test suite never touches your real `%APPDATA%\TIGHC` (or
