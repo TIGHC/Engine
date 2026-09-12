@@ -5,6 +5,65 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.0.0] - 2026-09-12
+
+### Changed
+- **The GUI is rewritten from Tkinter/sv_ttk to PySide6/Qt** — a MAJOR
+  bump since this touches how the app looks and runs top to bottom, even
+  though every on-disk config format (`haptics.json`, `devices.json`,
+  `profile.json`) is unchanged. `gui.py` shrinks from a 2,700-line
+  monolithic file to a ~65-line entry point; the six tabs (Devices,
+  Profiles, Test, Settings, Run, About) plus the age-gate dialog now
+  live in a new `src/gui/` package, one module per tab:
+  `theme.py` (QSS light/dark tokens matching tighc.stuxie.dev's own
+  style.css), `age_gate.py`, `workers.py` (the buttplug/asyncio
+  `AsyncBridge` ports over unchanged - it never depended on Tk - plus a
+  `MainThreadRelay` replacing the old `queue.Queue` + polling loop with
+  direct Qt-signal marshaling), `main_window.py`, `devices_tab.py`,
+  `profiles_tab.py`, `test_tab.py`, `settings_tab.py`, `run_tab.py`,
+  `about_tab.py`. The changelog viewer now renders real HTML instead of
+  manually walking text with per-run `tag_configure()` calls. New
+  `assets/checkbox_check.png` for the QCheckBox indicator's checked
+  state (Qt's QSS loses the native checkmark once background/border are
+  styled). `requirements.txt`/`pyproject.toml` drop `sv_ttk`, gain
+  `PySide6>=6.7`.
+- **`scripts/build_exe.py` moved to `src/scripts/build_exe.py`**, and
+  **`build.bat`/`build.sh` are gone** - dependency install (requirements
+  + PyInstaller) and the `TIGHC-<os>-vX.Y.Z` release rename are now
+  handled by the script itself, run directly
+  (`python src/scripts/build_exe.py`), matching the sibling TS4RLS/TWRAR
+  projects' layout. `pyproject.toml`'s package list switched to
+  setuptools' `find:` so new `src/` subpackages are picked up
+  automatically instead of needing a manual entry per package.
+- `.github/workflows/ci.yml`'s Linux build job now installs Qt's runtime
+  libraries (`libegl1`/`libopengl0`) instead of `python3-tk`/`tk-dev`.
+- **`LINUX_GUIDE.md` moved to [tighc.stuxie.dev/guides/linux](https://tighc.stuxie.dev/guides/linux)**
+  (already existed there, kept in sync all session) - README.md/
+  CONTRIBUTING.md now link to the website page instead of a root-level
+  markdown file, matching the sibling TS4RLS/TWRAR projects' pattern of
+  keeping reference docs on the website.
+- README's "How it's organized" tree was an abbreviated summary rather
+  than every actual file - rewrote it to exhaustively list the current
+  file set.
+
+### Removed
+- **The SteamGridDB cover-art feature is gone entirely** - it no longer
+  fits the project. Deleted `src/steamgriddb.py` and
+  `tests/test_steamgriddb.py` (3 tests); `src/profiles.py` drops
+  `Profile.steamgriddb_id`/`steamgriddb_grid_id` (any existing
+  `steamgriddb_*` keys in a profile's `profile.json` are now just
+  ignored by the parser, not an error); `src/paths.py` drops
+  `ARTWORK_CACHE_DIR`; the Settings tab's "Cover art (SteamGridDB)"
+  section, and the Profiles/Test tabs' cover-art thumbnails and picker
+  dialogs, are gone along with it.
+
+### Fixed
+- Rebuilding the Settings tab (the "Reset settings to defaults" button)
+  crashed with "Internal C++ object already deleted" -
+  `QScrollArea.setWidget()` already deletes whatever widget it
+  previously held; calling `deleteLater()` on that old body ourselves
+  afterward was a double-delete.
+
 ## [5.3.3] - 2026-09-12
 
 ### Fixed
