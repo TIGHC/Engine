@@ -28,7 +28,7 @@ Prefer not to install Python at all? Grab a standalone executable from the
 **[latest release](https://github.com/TIGHC/Engine/releases/latest)** -
 `TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` / `TIGHC-macos-vX.Y.Z`.
 These are built automatically by CI from this same source (see
-`.github/workflows/ci.yml` and `src/scripts/build_exe.py`) - no separate
+`.github/workflows/ci.yml` and `src/build/create_release_files.py`) - no separate
 download needed. You can also browse every release, with download
 links per platform, on the [Releases page](https://tighc.stuxie.dev/releases).
 
@@ -77,8 +77,8 @@ src/
   metadata.py                # project name/repo URL
   version.py                 # version number + get_version()/get_version_tuple()
   updates.py                 # GitHub update check (About tab + startup)
-  scripts/
-    build_exe.py             # PyInstaller build script (see "Development" below)
+  build/
+    create_release_files.py  # PyInstaller build script (see "Development" below)
   gui/                       # PySide6/Qt GUI
     theme.py                 # QSS light/dark tokens matching tighc.stuxie.dev's style.css
     age_gate.py               # the 18+ confirmation dialog
@@ -227,9 +227,9 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
-python src/scripts/build_exe.py     # installs pyinstaller if missing, builds, and names
-                                     # the output like a release download:
-                                     # dist/TIGHC-<os>-vX.Y.Z(.exe)
+python src/build/create_release_files.py  # installs pyinstaller if missing, builds, and names
+                                           # the output like a release download:
+                                           # dist/TIGHC-<os>-vX.Y.Z(.exe)
 ```
 
 The test suite never touches your real `%APPDATA%\TIGHC` (or

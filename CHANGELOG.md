@@ -5,6 +5,17 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.0.1] - 2026-09-12
+
+### Changed
+- Renamed `src/scripts/` to `src/build/` and `build_exe.py` to
+  `create_release_files.py`, matching the sibling TWRAR/TS4RLS projects'
+  layout and naming.
+
+### Fixed
+- `.gitignore`'s unanchored `build/`/`dist/` rules were silently
+  swallowing the new `src/build/` package — anchored to `/build/`/`/dist/`.
+
 ## [6.0.0] - 2026-09-12
 
 ### Changed

@@ -11,9 +11,11 @@ __pycache__/
 
 # pytest, and PyInstaller build output (build/ and dist/, including the
 # .spec file PyInstaller itself generates into build/) - see
-# src/scripts/build_exe.py and .github/workflows/ci.yml for how these are
-# (re)built; nothing under either should ever be committed.
+# src/build/create_release_files.py and .github/workflows/ci.yml for how
+# these are (re)built; nothing under either should ever be committed.
+# Anchored to the repo root so this doesn't also swallow the src/build/
+# package itself.
 .pytest_cache/
-build/
-dist/
+/build/
+/dist/
 *.egg-info/

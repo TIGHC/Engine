@@ -3,7 +3,7 @@ name: CI
 # Runs the pytest suite on every push/PR (across OSes and supported Python
 # versions), and - only when a `vX.Y.Z` tag is pushed (see commit.sh/
 # commit.bat, which create that tag from VERSION.md) - builds a standalone
-# GUI executable for Windows, Linux, and macOS via src/scripts/build_exe.py
+# GUI executable for Windows, Linux, and macOS via src/build/create_release_files.py
 # (the same script a contributor runs locally) and attaches them to a
 # GitHub Release. The release job depends on the test job passing on the
 # exact commit being tagged, so a broken build is never published.
@@ -60,7 +60,7 @@ jobs:
 
       - name: Build executable
         shell: bash
-        run: python src/scripts/build_exe.py
+        run: python src/build/create_release_files.py
 
       - name: Set asset path
         shell: bash

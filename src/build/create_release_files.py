@@ -2,7 +2,7 @@
 platform this is run on, and renames it to match a release download
 (TIGHC-<os>-vX.Y.Z).
 
-Run with: python src/scripts/build_exe.py
+Run with: python src/build/create_release_files.py
 Installs its own dependencies (requirements.txt + PyInstaller) first, no
 separate build.bat/build.sh wrapper or manual `pip install` needed.
 
@@ -77,7 +77,7 @@ COMMON_ARGS = [
 
 def ensure_dependencies() -> None:
     # No build.bat/build.sh wrapper to install these first - this script
-    # is run directly (`python src/scripts/build_exe.py`), so it installs
+    # is run directly (`python src/build/create_release_files.py`), so it installs
     # its own runtime + build dependencies before importing PyInstaller.
     subprocess.check_call(
         [sys.executable, "-m", "pip", "install", "-r", str(REPO_ROOT / "requirements.txt"), "-q"]
