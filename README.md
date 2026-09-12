@@ -51,42 +51,64 @@ full path (Windows users on OneDrive-synced folders sometimes need this).
 Windows is the primary target, but the engine also runs on Linux, including
 Steam Deck's Desktop Mode - it needs an X11 session rather than Desktop
 Mode's default Wayland one, since focused-window detection and global
-input capture both require it. See **[LINUX_GUIDE.md](LINUX_GUIDE.md)** for
-the full setup walkthrough (switching sessions, installing dependencies,
+input capture both require it. See **[the Linux &amp; Steam Deck guide](https://tighc.stuxie.dev/guides/linux)**
+for the full setup walkthrough (switching sessions, installing dependencies,
 getting Intiface Central running, troubleshooting). Everything else in this
 README - profiles, the GUI - applies identically on Linux.
 
 Standalone Linux, Windows, and macOS executables are built automatically for
 every tagged release (see [Quick start](#quick-start) above) - actual Steam
 Deck **Game Mode** support (as opposed to Desktop Mode, which already works
-today) is still a roadmap item; see LINUX_GUIDE.md's note on this.
+today) is still a roadmap item; see the Linux guide's note on this.
 
 ## How it's organized
 
 ```
+gui.py                       # entry point: QApplication setup, age gate, launches MainWindow
 src/
-  tighc.py                        # re-export facade over the modules below - not meant to be run directly
-  engine.py                       # HapticsController - the engine itself
-  haptics.py                      # configs/haptics.json load/apply + derived settings
-  profiles.py                     # profiles/<id>/profile.json loading
-  devices.py                      # configs/devices.json registry + per-channel state
-  input.py                        # keyboard/mouse normalization, focused-window lookup
-  ranges.py                       # VibeRange/DurationRange/PulseSpec
-  paths.py                        # filesystem layout (configs/, profiles/)
-  metadata.py                     # project name/repo URL
-  version.py                      # version number + get_version()/get_version_tuple()
-  updates.py                      # GitHub update check (About tab + startup)
-  scripts/build_exe.py            # PyInstaller build script (see "Development" below)
-gui.py                            # interactive configurator + launcher (imports src/tighc.py)
-assets/                           # icon.png/icon.ico/icon.icns (window/taskbar/macOS icon) and logo.png (About tab banner)
-tests/                            # pytest suite - see "Development" below
-pyproject.toml                    # project metadata/dependencies + pytest config
-.github/workflows/ci.yml          # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
+  tighc.py                   # re-export facade over the modules below - not meant to be run directly
+  engine.py                  # HapticsController - the engine itself
+  haptics.py                 # configs/haptics.json load/apply + derived settings
+  profiles.py                # profiles/<id>/profile.json loading
+  devices.py                 # configs/devices.json registry + per-channel state
+  input.py                   # keyboard/mouse normalization, focused-window lookup
+  ranges.py                  # VibeRange/DurationRange/PulseSpec
+  paths.py                   # filesystem layout (configs/, profiles/)
+  metadata.py                # project name/repo URL
+  version.py                 # version number + get_version()/get_version_tuple()
+  updates.py                 # GitHub update check (About tab + startup)
+  scripts/
+    build_exe.py             # PyInstaller build script (see "Development" below)
+  gui/                       # PySide6/Qt GUI
+    theme.py                 # QSS light/dark tokens matching tighc.stuxie.dev's style.css
+    age_gate.py               # the 18+ confirmation dialog
+    workers.py                # AsyncBridge + Qt-thread marshaling helpers
+    main_window.py            # window shell, top bar, tab widget
+    devices_tab.py            # connection controls, channel list, rename
+    profiles_tab.py           # profile picker/form, bindings table, binding editor dialog
+    test_tab.py                # manual channel control + simulated-keybind triggers
+    settings_tab.py            # haptics.json form + user-data-folder shortcuts
+    run_tab.py                 # Start/Stop, live status, log viewer
+    about_tab.py                # version/update-check, links, changelog viewer
+assets/
+  icon.png, icon.ico, icon.icns  # window/taskbar/macOS icon
+  logo.png                    # About tab banner / age-gate logo
+  author.png                  # avatar next to the author link on the About tab
+  checkbox_check.png          # QCheckBox's checked-state icon (see src/gui/theme.py)
+tests/                        # pytest suite - see "Development" below
+pyproject.toml                # project metadata/dependencies + pytest config
+requirements.txt               # runtime dependencies (same list as pyproject.toml's)
+CHANGELOG.md / VERSION.md      # release history + current version (semver)
+CONTRIBUTING.md                # how to contribute a change
+LICENSE.md                     # GPL-3.0-or-later
+commit.sh / commit.bat         # commit + tag a release, reading the version from VERSION.md
+.gitignore
+.github/workflows/ci.yml       # tests on every push/PR; builds + publishes releases on a vX.Y.Z tag
 %APPDATA%\TIGHC\  (~/Library/Application Support/TIGHC/ on macOS, ~/.local/share/TIGHC/ on Linux)  # per-user data, never touched by git
-  profiles/                       # downloaded from TIGHC Profiles on GitHub on first launch
+  profiles/                    # downloaded from TIGHC Profiles on GitHub on first launch
   configs/
-    haptics.json                  # global settings (connection, panic key, smoothing, ...)
-    devices.json                  # remembers a nickname for each connected motor/capability
+    haptics.json               # global settings (connection, panic key, smoothing, ...)
+    devices.json                # remembers a nickname for each connected motor/capability
   <your-other-game>/
     profile.json
 ```

@@ -1,5 +1,4 @@
 buttplug
 pynput
-sv_ttk
 PySide6>=6.7
 python-xlib; sys_platform == "linux"

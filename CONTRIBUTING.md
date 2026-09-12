@@ -44,7 +44,8 @@ manually:
   on macOS, `~/.local/share/TIGHC/profiles/` on Linux) - a structurally invalid profile should fail fast with a clear
   error, not crash mid-session.
 - If you touched Linux-specific code (`src/input.py`'s X11 path), test on
-  an actual X11 session where possible - see [LINUX_GUIDE.md](LINUX_GUIDE.md).
+  an actual X11 session where possible - see
+  [the Linux & Steam Deck guide](https://tighc.stuxie.dev/guides/linux).
 
 CI (`.github/workflows/ci.yml`) runs the same test suite on Windows and Linux
 for every push/PR, and builds a standalone GUI executable (via
