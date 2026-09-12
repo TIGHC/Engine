@@ -1,7 +1,6 @@
 # User data now lives in %APPDATA%\TIGHC (or ~/.local/share/TIGHC on Linux).
-# These repo-root dirs may exist on older installs - keep them gitignored.
+# This repo-root dir may exist on older installs - keep it gitignored.
 configs/
-artwork_cache/
 
 # Generated, not source
 __pycache__/

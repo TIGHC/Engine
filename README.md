@@ -54,7 +54,7 @@ Mode's default Wayland one, since focused-window detection and global
 input capture both require it. See **[LINUX_GUIDE.md](LINUX_GUIDE.md)** for
 the full setup walkthrough (switching sessions, installing dependencies,
 getting Intiface Central running, troubleshooting). Everything else in this
-README - profiles, the GUI, cover art - applies identically on Linux.
+README - profiles, the GUI - applies identically on Linux.
 
 Standalone Linux, Windows, and macOS executables are built automatically for
 every tagged release (see [Quick start](#quick-start) above) - actual Steam
@@ -68,12 +68,11 @@ src/
   tighc.py                        # re-export facade over the modules below - not meant to be run directly
   engine.py                       # HapticsController - the engine itself
   haptics.py                      # configs/haptics.json load/apply + derived settings
-  steamgriddb.py                  # SteamGridDB cover-art fetching/caching
   profiles.py                     # profiles/<id>/profile.json loading
   devices.py                      # configs/devices.json registry + per-channel state
   input.py                        # keyboard/mouse normalization, focused-window lookup
   ranges.py                       # VibeRange/DurationRange/PulseSpec
-  paths.py                        # filesystem layout (configs/, profiles/, artwork_cache/)
+  paths.py                        # filesystem layout (configs/, profiles/)
   metadata.py                     # project name/repo URL
   version.py                      # version number + get_version()/get_version_tuple()
   updates.py                      # GitHub update check (About tab + startup)
@@ -88,17 +87,14 @@ pyproject.toml                    # project metadata/dependencies + pytest confi
   configs/
     haptics.json                  # global settings (connection, panic key, smoothing, ...)
     devices.json                  # remembers a nickname for each connected motor/capability
-    steamgriddb_config.json       # your SteamGridDB API key - keep this private
-    steamgriddb_cache.json        # resolved game ids / chosen art per profile
-  artwork_cache/                  # downloaded cover-art images
   <your-other-game>/
     profile.json
 ```
 
-`configs/` and its contents, along with `artwork_cache/`, are created
-automatically (with sensible defaults) the first time you run `gui.py` - you
-don't need to create them yourself. Editing the JSON files by hand and using
-the GUI are fully interchangeable - both just read/write the same files.
+`configs/` and its contents are created automatically (with sensible
+defaults) the first time you run `gui.py` - you don't need to create them
+yourself. Editing the JSON files by hand and using the GUI are fully
+interchangeable - both just read/write the same files.
 
 ## Profiles: one per game
 
@@ -182,44 +178,6 @@ Position-based outputs (e.g. stroker-style "move to position X") aren't
 supported - only continuous intensity-style outputs (vibrate, rotate,
 oscillate, constrict, etc.) fit the "roll a random level" model this script
 uses.
-
-## Cover art (SteamGridDB)
-
-The Profiles and Test tabs can show each profile's box art, fetched from
-[SteamGridDB](https://www.steamgriddb.com/). It's off by default:
-
-1. Get a free API key at
-   [steamgriddb.com/profile/preferences](https://www.steamgriddb.com/profile/preferences)
-   (there's a link to this right in the Settings tab).
-2. In the GUI's **Settings** tab, check "Show profile cover art", paste the
-   key in, and click "Save cover art settings" - this takes effect
-   immediately, no restart needed.
-3. Switching profiles in the Profiles or Test tab then fetches (and caches)
-   that game's top-voted cover art automatically.
-
-By default a profile's art is found by searching SteamGridDB for its display
-`name`, preferring a `verified` (SteamGridDB-curated) match. If that ever
-finds the wrong game - an ambiguous title, a very new release not yet
-well-indexed - use **"Change cover art..."** on the Profiles tab to search
-and pin an exact game id (stored as `steamgriddb_id` in that profile's
-`keybinds.json`; "Use automatic search instead" clears it again).
-
-That still just uses the top-voted image for whichever game is resolved -
-use **"Choose image..."** on the Profiles tab to browse every cover image
-SteamGridDB has for that game and pin a specific one instead (stored as
-`steamgriddb_grid_id`, independent of `steamgriddb_id` above - overriding
-the game and overriding the image are separate choices, either or both).
-"Use default (top-voted)" in that dialog clears the image override; if a
-previously-pinned image is later removed from SteamGridDB, this falls back
-to the default automatically and logs why on the Run tab.
-
-Note: SteamGridDB's "official art" concept only really applies to logos and
-icons, not the cover-art grids shown here - grids don't have an official/
-fan-made distinction in their API, so the default/top-voted pick above just
-means whichever grid has the most community votes.
-
-`configs/steamgriddb_config.json` holds your API key in plain text - treat
-it like a password (don't commit it or share the file).
 
 ## Global settings
 

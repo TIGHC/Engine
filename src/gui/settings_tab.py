@@ -1,11 +1,10 @@
 """Settings tab: one form field/checkbox per haptics.json key, plus
-SteamGridDB cover-art settings and user-data-folder shortcuts.
+user-data-folder shortcuts.
 """
 from __future__ import annotations
 
 import subprocess
 import sys
-import webbrowser
 
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -138,40 +137,6 @@ class SettingsTab(QWidget):
         layout.addWidget(hint, row, 0, 1, 2)
         row += 1
 
-        sep1 = QFrame()
-        sep1.setFrameShape(QFrame.HLine)
-        layout.addWidget(sep1, row, 0, 1, 2)
-        row += 1
-        header1 = QLabel("Cover art (SteamGridDB)")
-        header1.setStyleSheet("font-weight: bold;")
-        layout.addWidget(header1, row, 0, 1, 2)
-        row += 1
-
-        sgdb_cfg = tighc.load_steamgriddb_config()
-        self.sgdb_enabled_check = QCheckBox("Show profile cover art (fetched from SteamGridDB)")
-        self.sgdb_enabled_check.setChecked(sgdb_cfg.get("enabled", False))
-        layout.addWidget(self.sgdb_enabled_check, row, 0, 1, 2)
-        row += 1
-        layout.addWidget(QLabel("API key:"), row, 0)
-        self.sgdb_api_key_field = QLineEdit(sgdb_cfg.get("api_key", ""))
-        self.sgdb_api_key_field.setEchoMode(QLineEdit.Password)
-        self.sgdb_api_key_field.setFixedWidth(280)
-        layout.addWidget(self.sgdb_api_key_field, row, 1)
-        row += 1
-        layout.addWidget(_link_label("Get a free key at steamgriddb.com/profile/preferences",
-                                      "https://www.steamgriddb.com/profile/preferences"), row, 0, 1, 2)
-        row += 1
-        save_sgdb_btn = QPushButton("Save cover art settings")
-        save_sgdb_btn.setProperty("accent", "true")
-        save_sgdb_btn.clicked.connect(self._on_save_steamgriddb_settings)
-        layout.addWidget(save_sgdb_btn, row, 0)
-        row += 1
-        sgdb_hint = QLabel("This takes effect immediately (no restart needed) - artwork is fetched per profile on the Profiles/Test tabs.")
-        sgdb_hint.setProperty("hint", "true")
-        sgdb_hint.setWordWrap(True)
-        layout.addWidget(sgdb_hint, row, 0, 1, 2)
-        row += 1
-
         sep2 = QFrame()
         sep2.setFrameShape(QFrame.HLine)
         layout.addWidget(sep2, row, 0, 1, 2)
@@ -229,16 +194,6 @@ class SettingsTab(QWidget):
         tighc.apply_haptics_config(reset_cfg)
         self.main_window.enqueue_log("Settings reset to defaults.")
         self._build_form()
-
-    def _on_save_steamgriddb_settings(self):
-        """Persist SteamGridDB settings and immediately try to (re)load artwork."""
-        tighc.save_steamgriddb_config({
-            "enabled": self.sgdb_enabled_check.isChecked(),
-            "api_key": self.sgdb_api_key_field.text().strip(),
-        })
-        self.main_window.enqueue_log("Cover art settings saved.")
-        self.main_window.profiles_tab.refresh_profile_artwork()
-        self.main_window.test_tab.refresh_test_artwork()
 
     def _on_save_settings(self):
         """

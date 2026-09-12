@@ -7,8 +7,8 @@
 TIGHC's primary target is Windows, but the engine also runs on Linux -
 including Steam Deck's **Desktop Mode**. This guide walks through the
 Linux-specific setup end to end. For everything else (profiles, the GUI,
-global settings, cover art), the [main README](README.md) applies exactly
-as written - this guide only covers what's different on Linux.
+global settings), the [main README](README.md) applies exactly as written -
+this guide only covers what's different on Linux.
 
 Not covered here: Steam Deck's **Game Mode**. Game Mode doesn't run
 arbitrary Python GUIs, so TIGHC has to run from Desktop Mode - alongside

@@ -1,12 +1,12 @@
 """Filesystem layout for TIGHC's per-install runtime state.
 
-Split out on its own so every other module (haptics, devices,
-profiles, steamgriddb) can depend on these paths without pulling in
-anything heavier - keeps the dependency graph a simple fan-out from here
-rather than everything routing through one large module.
+Split out on its own so every other module (haptics, devices, profiles)
+can depend on these paths without pulling in anything heavier - keeps the
+dependency graph a simple fan-out from here rather than everything
+routing through one large module.
 
-User data (configs, profiles, artwork cache) lives in the platform-standard
-per-user app directory so it survives git updates and submodule updates:
+User data (configs, profiles) lives in the platform-standard per-user app
+directory so it survives git updates and submodule updates:
   Windows: %APPDATA%\\TIGHC\\
   macOS:   ~/Library/Application Support/TIGHC/
   Linux:   ~/.local/share/TIGHC/
@@ -49,9 +49,6 @@ CONFIGS_DIR.mkdir(parents=True, exist_ok=True)
 # first run, then fully owned by the user (GUI reads/writes here).
 PROFILES_DIR = USER_DATA_DIR / "profiles"
 PROFILES_DIR.mkdir(parents=True, exist_ok=True)
-
-# Downloaded cover-art images.
-ARTWORK_CACHE_DIR = USER_DATA_DIR / "artwork_cache"
 
 
 if __name__ == "__main__":

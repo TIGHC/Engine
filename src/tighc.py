@@ -1,11 +1,11 @@
-"""The Intiface Game Haptics Controller (TIGHC) - engine + cover-art library facade.
+"""The Intiface Game Haptics Controller (TIGHC) - engine library facade.
 
 This module is a re-export surface, not where the implementation lives.
 gui.py is built against `from src import tighc` / `from src.tighc import
 NAME`; the actual code lives in focused modules, re-exported here so the
 entry point has one place to import everything from:
 
-  src/paths.py           - filesystem layout (configs/, profiles/, artwork_cache/, APP_ROOT for bundled resources)
+  src/paths.py           - filesystem layout (configs/, profiles/, APP_ROOT for bundled resources)
   src/metadata.py        - project name/repo URL
   src/version.py         - version number + get_version()/get_version_tuple()
   src/ranges.py          - VibeRange/DurationRange/PulseSpec
@@ -14,7 +14,6 @@ entry point has one place to import everything from:
   src/profiles.py        - profiles/<id>/profile.json loading + Profile
   src/input.py           - keyboard/mouse normalization, focused-window lookup
   src/engine.py          - HapticsController, the engine itself
-  src/steamgriddb.py     - SteamGridDB cover-art fetching/caching
   src/updates.py         - GitHub update check
 
 This module isn't meant to be run directly - it's a library, imported by
@@ -33,7 +32,7 @@ this facade.
 
 from src.metadata import AUTHOR_NAME, AUTHOR_URL, PROJECT_NAME, PROJECT_SHORT_NAME, PROJECTS_URL, REPO_URL, WEBSITE_URL
 from src.version import __version__, get_version, get_version_tuple
-from src.paths import APP_ROOT, ARTWORK_CACHE_DIR, CONFIGS_DIR, PROFILES_DIR, REPO_ROOT, USER_DATA_DIR
+from src.paths import APP_ROOT, CONFIGS_DIR, PROFILES_DIR, REPO_ROOT, USER_DATA_DIR
 from src.ranges import DurationRange, FloatRange, VibeRange
 from src.haptics import (
     BACKGROUND_TICK,
@@ -83,27 +82,9 @@ from src.profiles import (
 from src.input import InputState, get_foreground_window_title, normalize_key
 from src.engine import HapticsController
 from src.updates import check_for_update
-from src.steamgriddb import (
-    DEFAULT_STEAMGRIDDB_CONFIG,
-    STEAMGRIDDB_API_BASE,
-    STEAMGRIDDB_CACHE_PATH,
-    STEAMGRIDDB_CONFIG_PATH,
-    STEAMGRIDDB_USER_AGENT,
-    _load_steamgriddb_cache,
-    _resolve_game_id,
-    _save_steamgriddb_cache,
-    _steamgriddb_api_get,
-    download_image_bytes,
-    get_grids,
-    get_profile_artwork,
-    load_steamgriddb_config,
-    pick_best,
-    save_steamgriddb_config,
-    search_game,
-)
 
 if __name__ == "__main__":
-    print(f"{__file__} is the {PROJECT_SHORT_NAME} engine + cover-art library - it's not meant to be run directly.")
+    print(f"{__file__} is the {PROJECT_SHORT_NAME} engine library - it's not meant to be run directly.")
     print("Run `python gui.py` (from the repo root) for the interactive GUI.")
 
 # Happy Vibes

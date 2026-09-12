@@ -55,18 +55,6 @@ class Profile:
     # title just needs to contain it. Use exact=True when two games share a
     # common prefix, e.g. "Grounded" would otherwise also match "Grounded 2".
     window_title_exact: bool = False
-    # Optional, purely cosmetic: pins this profile to an exact SteamGridDB
-    # game id for cover-art lookup (see steamgriddb.get_profile_artwork()),
-    # bypassing the by-name search that could otherwise match the wrong game
-    # (e.g. a sequel or spin-off with a similar title). None means "search
-    # by name".
-    steamgriddb_id: Optional[int] = None
-    # Optional: pins this profile to one exact grid (cover-art image) id
-    # among that game's available options, instead of the default top-voted
-    # one get_profile_artwork() would otherwise pick via pick_best(). None
-    # means "use the default". Independent of steamgriddb_id above - you can
-    # override the image without overriding the game, or vice versa.
-    steamgriddb_grid_id: Optional[int] = None
 
     def matches(self, window_title: str) -> bool:
         """True if this profile's window_titles matches the window title (case-sensitive).
@@ -312,8 +300,6 @@ def _load_profile(profile_dir: Path) -> Profile:
         bindings_by_key=bindings_by_key,
         bindings=parsed_bindings,
         priority=priority,
-        steamgriddb_id=data.get("steamgriddb_id"),
-        steamgriddb_grid_id=data.get("steamgriddb_grid_id"),
     )
 
 
