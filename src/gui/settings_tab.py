@@ -171,12 +171,12 @@ class SettingsTab(QWidget):
         reset_btn.clicked.connect(self._on_reset_settings)
         layout.addWidget(reset_btn, row, 0)
 
-        old_body = self._body
         self._body = body
         if hasattr(self, "_scroll"):
+            # QScrollArea.setWidget() automatically deletes whatever widget
+            # it previously held - calling deleteLater() on the old body
+            # ourselves here would be a double-delete (and crash).
             self._scroll.setWidget(body)
-        if old_body is not None:
-            old_body.deleteLater()
 
     def _on_reset_settings(self):
         """Reset haptics.json to defaults by deleting it and rebuilding the form."""
