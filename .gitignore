@@ -7,6 +7,9 @@ artwork_cache/
 __pycache__/
 *.pyc
 
+# Local virtualenv - everyone creates their own, see CONTRIBUTING.md
+.venv/
+
 # pytest, and PyInstaller build output (build/ and dist/, including the
 # .spec file PyInstaller itself generates into build/) - see
 # scripts/build_exe.py, build.sh/build.bat, and .github/workflows/ci.yml

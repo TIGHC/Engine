@@ -242,8 +242,9 @@ matter which tab you're on.
 ## Development: tests and building executables
 
 ```
-pip install -r requirements.txt
-pip install pytest
+python -m venv .venv
+.venv/Scripts/activate               # .venv/bin/activate on Linux/macOS
+pip install -e ".[dev]"
 pytest                              # runs tests/ - pure-logic coverage (profiles, ranges,
                                      # devices, haptics config, paths); no GUI/network/hardware
 ./build.sh                          # or build.bat on Windows - installs pyinstaller if

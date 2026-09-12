@@ -11,7 +11,10 @@ Issues and pull requests are welcome at
 
 ```
 git clone https://github.com/TIGHC/Engine.git
-pip install -r requirements.txt
+cd Engine
+python -m venv .venv
+.venv/Scripts/activate   # .venv/bin/activate on Linux/macOS
+pip install -e ".[dev]"
 python gui.py
 ```
 
@@ -20,10 +23,10 @@ what each module does.
 
 ## Making a change
 
-Run the automated test suite before opening a PR:
+Run the automated test suite before opening a PR (already installed via the
+`.[dev]` extra above):
 
 ```
-pip install pytest
 pytest
 ```
 

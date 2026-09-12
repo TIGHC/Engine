@@ -5,6 +5,15 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [5.3.2] - 2026-09-12
+
+### Changed
+- **Dev setup now uses a `.venv`** instead of installing dependencies into
+  the global interpreter. `CONTRIBUTING.md`'s "Getting set up" section
+  walks through creating/activating one and installing via `pip install
+  -e ".[dev]"` (which also covers `pytest`/`pyinstaller`, replacing the
+  separate `pip install pytest` step). `.venv/` is gitignored.
+
 ## [5.3.1] - 2026-09-10
 
 ### Fixed
