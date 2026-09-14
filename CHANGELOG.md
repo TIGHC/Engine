@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.3] - 2026-09-14
+
+### Fixed
+- **Icon's "haptic wave" mark looked weird** (`create_project_assets.py`):
+  the two ticks radiating from the controller's top-right corner were
+  solid comet/kite-shaped polygons that read as two disconnected floating
+  shapes rather than a signal. Replaced with two concentric arc strokes
+  centered on the same pivot, reading clearly as an emanating
+  signal/vibration (closer to the app's original pulse-ring icon, before
+  the v6.1.0 game-controller redesign). Regenerated `icon.png`/`.ico`/
+  `.icns`/`logo.png` and synced the corrected copies to the sibling
+  Website repo.
+
 ## [6.3.2] - 2026-09-14
 
 ### Fixed

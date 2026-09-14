@@ -7,12 +7,11 @@ Requires Pillow (dev-only; not a runtime dependency of the app itself).
 
 Reproduces the existing hand-made icon/logo in code: a purple, fully
 rounded ("pill") game-controller body with a transparent-cutout D-pad
-cross and two face buttons, plus two comet-shaped "haptic wave" ticks
-radiating from its top-right corner.
+cross and two face buttons, plus two concentric arc strokes radiating
+from its top-right corner like an emanating signal/vibration.
 """
 from __future__ import annotations
 
-import math
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -55,40 +54,18 @@ BUTTON_RADIUS_FRAC = 11.5 / 256
 BUTTON_A_CENTER_FRAC = (157 / 256, 132 / 256)  # upper-right button
 BUTTON_B_CENTER_FRAC = (139 / 256, 158 / 256)  # lower-left button
 
-# Haptic wave ticks: two comet-shaped marks (pointed away from the pivot,
-# flat near it) radiating up-and-right from the capsule's top-right
-# corner, like a signal/vibration indicator.
+# Haptic wave arcs: two concentric arc strokes centered on the capsule's
+# top-right corner, sweeping through the up-and-right direction - reads
+# clearly as an emanating signal/vibration (like a WiFi/Bluetooth mark),
+# rather than as two disconnected shapes floating near the corner.
 WAVE_PIVOT_FRAC = (194 / 256, 94 / 256)
 WAVE_ANGLE_DEG = -42  # image coords: up-and-right
-WAVE_TAPER_FRAC = 0.5  # where the comet starts narrowing toward its point
-WAVES = [
-    # (distance from pivot to this wave's near edge, length, width), all
-    # as a fraction of `size`.
-    (0.03, 0.085, 0.072),
-    (0.155, 0.125, 0.088),
+WAVE_SWEEP_DEG = 80  # total angular width of each arc, centered on WAVE_ANGLE_DEG
+WAVE_ARCS = [
+    # (radius, stroke width), both as a fraction of `size`.
+    (0.135, 0.030),
+    (0.205, 0.030),
 ]
-
-
-def _wave_polygon(pivot: tuple[float, float], anchor_dist: float, length: float, width: float):
-    angle = math.radians(WAVE_ANGLE_DEG)
-    dx, dy = math.cos(angle), math.sin(angle)
-    px, py = -dy, dx  # perpendicular to (dx, dy)
-
-    anchor = (pivot[0] + dx * anchor_dist, pivot[1] + dy * anchor_dist)
-    taper_u = length * WAVE_TAPER_FRAC
-    half_w = width / 2
-
-    local_points = [
-        (length, 0),
-        (taper_u, half_w),
-        (0, half_w),
-        (0, -half_w),
-        (taper_u, -half_w),
-    ]
-    return [
-        (anchor[0] + u * dx + v * px, anchor[1] + u * dy + v * py)
-        for u, v in local_points
-    ]
 
 
 def draw_glyph(size: int) -> Image.Image:
@@ -101,11 +78,13 @@ def draw_glyph(size: int) -> Image.Image:
     draw.rounded_rectangle([left, top, right, bottom], radius=radius, fill=PURPLE)
 
     pivot = (WAVE_PIVOT_FRAC[0] * size, WAVE_PIVOT_FRAC[1] * size)
-    for anchor_dist, length, width in WAVES:
-        draw.polygon(
-            _wave_polygon(pivot, anchor_dist * size, length * size, width * size),
-            fill=PURPLE,
-        )
+    start_angle = WAVE_ANGLE_DEG - WAVE_SWEEP_DEG / 2
+    end_angle = WAVE_ANGLE_DEG + WAVE_SWEEP_DEG / 2
+    for radius_frac, stroke_frac in WAVE_ARCS:
+        r = radius_frac * size
+        stroke_width = max(1, round(stroke_frac * size))
+        bbox = [pivot[0] - r, pivot[1] - r, pivot[0] + r, pivot[1] + r]
+        draw.arc(bbox, start_angle, end_angle, fill=PURPLE, width=stroke_width)
 
     # Cut the D-pad cross and both face buttons out as real transparent
     # holes (drawn last, after the wave ticks, since they only ever
