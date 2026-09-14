@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.1] - 2026-09-14
+
+### Fixed
+- **Settings tab redesigned** (`settings_tab.py`): the flat 13-row grid of
+  every haptics.json field is now six titled `QGroupBox` sections
+  (Connection, Master random override, Level smoothing, Panic key,
+  Auto-reconnect, Timing, User data folders) instead of one undifferentiated
+  list, matching the sibling TS4RLS/TWRAR projects' settings layout.
+- **Radio buttons weren't accent-themed.** `theme.py` styled
+  `QCheckBox::indicator` with the accent color but never added a matching
+  `QRadioButton::indicator` rule, so the panic-key action radios (the only
+  radio buttons in the app) fell back to plain unthemed OS styling instead
+  of matching the checkboxes next to them. Added matching accent-colored
+  `QRadioButton::indicator` rules.
+
 ## [6.3.0] - 2026-09-13
 
 ### Added

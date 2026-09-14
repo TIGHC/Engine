@@ -173,6 +173,27 @@ QCheckBox::indicator:checked {{
 QCheckBox::indicator:hover {{
     border: 1px solid {accent};
 }}
+QRadioButton {{
+    color: {text};
+    spacing: 6px;
+}}
+QRadioButton::indicator {{
+    width: 15px;
+    height: 15px;
+    border: 1px solid {border};
+    border-radius: 8px;
+    background: {panel};
+}}
+QRadioButton::indicator:checked {{
+    border: 1px solid {accent};
+    background: qradialgradient(
+        cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,
+        stop:0 {accent}, stop:0.5 {accent}, stop:0.6 {panel}, stop:1 {panel}
+    );
+}}
+QRadioButton::indicator:hover {{
+    border: 1px solid {accent};
+}}
 QGroupBox {{
     border: 1px solid {border};
     border-radius: 6px;

@@ -8,8 +8,8 @@ import sys
 
 from PySide6.QtWidgets import (
     QCheckBox,
-    QFrame,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -62,44 +62,49 @@ class SettingsTab(QWidget):
 
     def _build_form(self):
         body = QWidget()
-        layout = QGridLayout(body)
-        row = 0
+        layout = QVBoxLayout(body)
         self.cfg_fields: dict[str, QLineEdit] = {}
 
         cfg = load_haptics_config()
 
-        def add(label: str, key: str, default) -> None:
-            nonlocal row
-            layout.addWidget(QLabel(label), row, 0)
+        def field_row(grid: QGridLayout, row: int, label: str, key: str, default, width: int = 140) -> None:
+            grid.addWidget(QLabel(label), row, 0)
             field = QLineEdit(str(default))
-            field.setFixedWidth(140)
-            layout.addWidget(field, row, 1)
+            field.setFixedWidth(width)
+            grid.addWidget(field, row, 1)
             self.cfg_fields[key] = field
-            row += 1
 
-        add("Intiface WS URL:", "intiface_ws", cfg["intiface_ws"])
+        conn_box = QGroupBox("Connection")
+        conn_grid = QGridLayout(conn_box)
+        field_row(conn_grid, 0, "Intiface WS URL:", "intiface_ws", cfg["intiface_ws"], width=220)
+        conn_grid.setColumnStretch(1, 1)
+        layout.addWidget(conn_box)
 
-        self.master_enabled_check = QCheckBox("Master random override enabled")
+        master_box = QGroupBox("Master random override")
+        master_grid = QGridLayout(master_box)
+        self.master_enabled_check = QCheckBox("Enabled")
         self.master_enabled_check.setChecked(cfg["master"]["enabled"])
-        layout.addWidget(self.master_enabled_check, row, 0, 1, 2)
-        row += 1
-        add("Master range % low:", "master_low", cfg["master"]["range"][0] * 100)
-        add("Master range % high:", "master_high", cfg["master"]["range"][1] * 100)
+        master_grid.addWidget(self.master_enabled_check, 0, 0, 1, 2)
+        field_row(master_grid, 1, "Range % low:", "master_low", cfg["master"]["range"][0] * 100)
+        field_row(master_grid, 2, "Range % high:", "master_high", cfg["master"]["range"][1] * 100)
+        layout.addWidget(master_box)
 
-        self.smoothing_enabled_check = QCheckBox("Level smoothing enabled")
+        smoothing_box = QGroupBox("Level smoothing")
+        smoothing_grid = QGridLayout(smoothing_box)
+        self.smoothing_enabled_check = QCheckBox("Enabled")
         self.smoothing_enabled_check.setChecked(cfg["smoothing"]["enabled"])
-        layout.addWidget(self.smoothing_enabled_check, row, 0, 1, 2)
-        row += 1
-        add("Smoothing factor (0-1):", "smoothing_factor", cfg["smoothing"]["factor"])
+        smoothing_grid.addWidget(self.smoothing_enabled_check, 0, 0, 1, 2)
+        field_row(smoothing_grid, 1, "Smoothing factor (0-1):", "smoothing_factor", cfg["smoothing"]["factor"])
+        layout.addWidget(smoothing_box)
 
-        self.panic_enabled_check = QCheckBox("Panic key enabled")
+        panic_box = QGroupBox("Panic key")
+        panic_grid = QGridLayout(panic_box)
+        self.panic_enabled_check = QCheckBox("Enabled")
         self.panic_enabled_check.setChecked(cfg["panic_key"]["enabled"])
-        layout.addWidget(self.panic_enabled_check, row, 0, 1, 2)
-        row += 1
-        add("Panic key:", "panic_key", cfg["panic_key"]["key"])
-        add("Panic hold duration (sec):", "panic_hold", cfg["panic_key"]["hold_duration"])
-
-        layout.addWidget(QLabel("Panic key action:"), row, 0)
+        panic_grid.addWidget(self.panic_enabled_check, 0, 0, 1, 2)
+        field_row(panic_grid, 1, "Key:", "panic_key", cfg["panic_key"]["key"])
+        field_row(panic_grid, 2, "Hold duration (sec):", "panic_hold", cfg["panic_key"]["hold_duration"])
+        panic_grid.addWidget(QLabel("Action:"), 3, 0)
         mode_row = QHBoxLayout()
         self.panic_mode_hold = QRadioButton("Suppress for duration")
         self.panic_mode_stop = QRadioButton("Stop engine completely")
@@ -112,40 +117,40 @@ class SettingsTab(QWidget):
         mode_row.addStretch(1)
         mode_widget = QWidget()
         mode_widget.setLayout(mode_row)
-        layout.addWidget(mode_widget, row, 1)
-        row += 1
+        panic_grid.addWidget(mode_widget, 3, 1)
+        layout.addWidget(panic_box)
 
-        self.reconnect_enabled_check = QCheckBox("Auto-reconnect enabled")
+        reconnect_box = QGroupBox("Auto-reconnect")
+        reconnect_grid = QGridLayout(reconnect_box)
+        self.reconnect_enabled_check = QCheckBox("Enabled")
         self.reconnect_enabled_check.setChecked(cfg["auto_reconnect"]["enabled"])
-        layout.addWidget(self.reconnect_enabled_check, row, 0, 1, 2)
-        row += 1
-        add("Reconnect cooldown (sec):", "reconnect_cooldown", cfg["auto_reconnect"]["cooldown"])
-        add("Reconnect failure threshold:", "reconnect_threshold", cfg["auto_reconnect"]["failure_threshold"])
-        add("Background tick (sec):", "background_tick", cfg["timing"]["background_tick"])
+        reconnect_grid.addWidget(self.reconnect_enabled_check, 0, 0, 1, 2)
+        field_row(reconnect_grid, 1, "Cooldown (sec):", "reconnect_cooldown", cfg["auto_reconnect"]["cooldown"])
+        field_row(reconnect_grid, 2, "Failure threshold:", "reconnect_threshold", cfg["auto_reconnect"]["failure_threshold"])
+        layout.addWidget(reconnect_box)
 
+        timing_box = QGroupBox("Timing")
+        timing_grid = QGridLayout(timing_box)
+        field_row(timing_grid, 0, "Background tick (sec):", "background_tick", cfg["timing"]["background_tick"])
+        layout.addWidget(timing_box)
+
+        save_row = QHBoxLayout()
         save_settings_btn = QPushButton("Save settings")
         save_settings_btn.setProperty("accent", "true")
         save_settings_btn.clicked.connect(self._on_save_settings)
-        layout.addWidget(save_settings_btn, row, 0)
-        row += 1
+        save_row.addWidget(save_settings_btn)
+        save_row.addStretch(1)
+        layout.addLayout(save_row)
         hint = QLabel(
             "Takes effect immediately - no restart needed. Exception: a WebSocket URL change needs "
             '"Connect + Scan" (or Stop then Start) to actually reconnect to it.'
         )
         hint.setProperty("hint", "true")
         hint.setWordWrap(True)
-        layout.addWidget(hint, row, 0, 1, 2)
-        row += 1
+        layout.addWidget(hint)
 
-        sep2 = QFrame()
-        sep2.setFrameShape(QFrame.HLine)
-        layout.addWidget(sep2, row, 0, 1, 2)
-        row += 1
-        header2 = QLabel("User data folders")
-        header2.setStyleSheet("font-weight: bold;")
-        layout.addWidget(header2, row, 0, 1, 2)
-        row += 1
-
+        data_box = QGroupBox("User data folders")
+        data_layout = QVBoxLayout(data_box)
         folders_row = QHBoxLayout()
         for label, path in (
             ("Open user data folder", USER_DATA_DIR),
@@ -157,19 +162,21 @@ class SettingsTab(QWidget):
             folders_row.addWidget(btn)
         folders_row.addWidget(_link_label("Browse profiles on GitHub", TIGHC_PROFILES_URL))
         folders_row.addStretch(1)
-        folders_widget = QWidget()
-        folders_widget.setLayout(folders_row)
-        layout.addWidget(folders_widget, row, 0, 1, 2)
-        row += 1
+        data_layout.addLayout(folders_row)
         data_hint = QLabel("User data (your profiles and settings) is stored separately from the app so it survives updates.")
         data_hint.setProperty("hint", "true")
         data_hint.setWordWrap(True)
-        layout.addWidget(data_hint, row, 0, 1, 2)
-        row += 1
+        data_layout.addWidget(data_hint)
+        layout.addWidget(data_box)
 
         reset_btn = QPushButton("Reset settings to defaults")
         reset_btn.clicked.connect(self._on_reset_settings)
-        layout.addWidget(reset_btn, row, 0)
+        reset_row = QHBoxLayout()
+        reset_row.addWidget(reset_btn)
+        reset_row.addStretch(1)
+        layout.addLayout(reset_row)
+
+        layout.addStretch(1)
 
         self._body = body
         if hasattr(self, "_scroll"):
