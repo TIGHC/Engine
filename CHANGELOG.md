@@ -5,6 +5,14 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.4] - 2026-09-14
+
+### Fixed
+- Regenerated `assets/steam/*` (`create_steam_assets.py`) from the
+  corrected icon/logo (v6.3.3) — the Steam library artwork's tiled
+  background pattern and icon marks were still showing the old
+  disconnected comet-shaped wave ticks.
+
 ## [6.3.3] - 2026-09-14
 
 ### Fixed
