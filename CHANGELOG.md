@@ -5,6 +5,15 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.2] - 2026-09-14
+
+### Fixed
+- Disabled UPX compression (`--noupx`) in the release build's PyInstaller
+  args (`create_release_files.py`). UPX-compressed executables, combined
+  with `pynput`'s global keyboard/mouse hook, are a common trigger for
+  Defender's ML heuristic — this build was being flagged and quarantined
+  as `Trojan:Win32/Wacatac.B!ml`, a known PyInstaller false positive.
+
 ## [6.3.1] - 2026-09-14
 
 ### Fixed

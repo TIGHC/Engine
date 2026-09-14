@@ -67,6 +67,11 @@ def _pynput_hidden_import_args() -> list[str]:
 COMMON_ARGS = [
     "--onefile",
     "--noconfirm",
+    # UPX-compressed executables are heavily associated with malware
+    # packers and are a common trigger for AV/Defender heuristic false
+    # positives -- especially combined with pynput's global input hook,
+    # which already looks keylogger-shaped to those heuristics.
+    "--noupx",
     f"--distpath={DIST_DIR}",
     f"--workpath={BUILD_DIR}",
     f"--specpath={BUILD_DIR}",
