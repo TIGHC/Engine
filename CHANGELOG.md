@@ -5,6 +5,11 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.5] - 2026-09-15
+
+### Fixed
+- `README.md`'s footer credit now uses the hosted `https://global.media.stuxie.dev/icon.png` StuxieDev icon instead of the live GitHub avatar shorthand
+
 ## [6.3.4] - 2026-09-14
 
 ### Fixed
