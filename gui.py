@@ -11,7 +11,7 @@ GUI are fully interchangeable.
 
 Run with: python gui.py
 
-Copyright (C) StuxieDev. Licensed under the GNU General Public License
+Copyright (C) Stux.Group. Licensed under the GNU General Public License
 v3.0 (or later) - see LICENSE.md for the full text and
 https://github.com/TIGHC/Engine for source.
 """

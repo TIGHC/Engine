@@ -17,6 +17,7 @@ nothing matches.
 """
 
 import json
+import re
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,6 +30,17 @@ TIGHC_PROFILES_REPO = "TIGHC/Profiles"
 TIGHC_PROFILES_RAW_BASE = f"https://raw.githubusercontent.com/{TIGHC_PROFILES_REPO}/main"
 TIGHC_PROFILES_API_BASE = f"https://api.github.com/repos/{TIGHC_PROFILES_REPO}/contents"
 TIGHC_PROFILES_URL = f"https://github.com/{TIGHC_PROFILES_REPO}"
+
+# Profile ids become folder names under PROFILES_DIR and path segments in
+# GitHub URLs, so anything fetched from the network must be a plain
+# identifier - never "..", a slash, or anything else that could escape
+# PROFILES_DIR or point the request somewhere unexpected.
+_PROFILE_ID_RE = re.compile(r"[A-Za-z0-9_-]+")
+
+
+def is_valid_profile_id(profile_id) -> bool:
+    """True if profile_id is a safe folder name: letters, digits, "_" and "-" only."""
+    return isinstance(profile_id, str) and _PROFILE_ID_RE.fullmatch(profile_id) is not None
 
 
 @dataclass(frozen=True)
@@ -90,6 +102,7 @@ def fetch_profile_ids_from_github() -> list:
         return [
             item["name"] for item in items
             if item.get("type") == "dir" and item["name"] != "assets"
+            and is_valid_profile_id(item["name"])
         ]
     except Exception:
         return []
@@ -98,8 +111,11 @@ def fetch_profile_ids_from_github() -> list:
 def fetch_profile_from_github(profile_id: str) -> Optional[dict]:
     """
     Fetch and parse a single profile.json from the TIGHC Profiles GitHub repo.
-    Returns the parsed dict or None if the request fails or the JSON is invalid.
+    Returns the parsed dict or None if the request fails, the JSON is invalid,
+    or profile_id isn't a valid profile id (see is_valid_profile_id).
     """
+    if not is_valid_profile_id(profile_id):
+        return None
     data = _github_get(f"{TIGHC_PROFILES_RAW_BASE}/{profile_id}/profile.json")
     if data is None:
         return None
@@ -157,6 +173,8 @@ restore_profile_from_bundled = restore_profile_from_github
 
 def has_bundled_version(profile_id: str) -> bool:
     """True if this profile exists in the TIGHC Profiles GitHub repo."""
+    if not is_valid_profile_id(profile_id):
+        return False
     data = _github_get(
         f"{TIGHC_PROFILES_RAW_BASE}/{profile_id}/profile.json",
         timeout=4,

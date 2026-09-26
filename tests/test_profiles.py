@@ -131,3 +131,39 @@ def test_profile_matches_exact_when_flagged():
     )
     assert profile.matches("Grounded")
     assert not profile.matches("Grounded 2")
+
+
+# ---------------------------------------------------------------- profile ids
+@pytest.mark.parametrize("profile_id", ["minecraft", "grounded_2", "cult-of-the-lamb", "A1"])
+def test_is_valid_profile_id_accepts_plain_ids(profile_id):
+    from src import profiles
+    assert profiles.is_valid_profile_id(profile_id)
+
+
+@pytest.mark.parametrize("profile_id", ["", "..", "../evil", "a/b", "a\\b", "a.b", "a b", None, 5])
+def test_is_valid_profile_id_rejects_unsafe_ids(profile_id):
+    from src import profiles
+    assert not profiles.is_valid_profile_id(profile_id)
+
+
+def test_fetch_profile_ids_from_github_drops_unsafe_names(monkeypatch):
+    from src import profiles
+    listing = [
+        {"name": "minecraft", "type": "dir"},
+        {"name": "assets", "type": "dir"},
+        {"name": "..", "type": "dir"},
+        {"name": "bad name", "type": "dir"},
+        {"name": "README.md", "type": "file"},
+    ]
+    monkeypatch.setattr(profiles, "_github_get", lambda url, timeout=8: json.dumps(listing).encode())
+    assert profiles.fetch_profile_ids_from_github() == ["minecraft"]
+
+
+def test_fetch_profile_from_github_refuses_unsafe_id_without_network(monkeypatch):
+    from src import profiles
+    def fail(*_a, **_k):
+        raise AssertionError("must not hit the network for an invalid id")
+    monkeypatch.setattr(profiles, "_github_get", fail)
+    assert profiles.fetch_profile_from_github("../evil") is None
+    assert profiles.has_bundled_version("../evil") is False
+    assert profiles.restore_profile_from_github("../evil") is False

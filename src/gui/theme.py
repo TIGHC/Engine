@@ -9,6 +9,8 @@ system setting.
 """
 from __future__ import annotations
 
+import re
+
 from src import paths
 
 DEFAULT_THEME = "dark"
@@ -313,3 +315,72 @@ def text_dim_color(theme_name: str) -> str:
 
 def code_text_color(theme_name: str) -> str:
     return tokens(theme_name)["code_text"]
+
+
+# Changelog section-type colours -- fixed across every project and matching
+# the website's changelog badges: Added green, Changed blue, Fixed orange,
+# Removed red, Security purple, Deprecated grey. Light-theme foregrounds are
+# darker shades of the same hues so they keep contrast on light panels.
+CHANGELOG_SECTION_ORDER = ("added", "changed", "fixed", "removed", "security", "deprecated")
+_CHANGELOG_COLORS_DARK = {
+    "added": "#2ecc71",
+    "changed": "#3ba7ff",
+    "fixed": "#ffa64d",
+    "removed": "#ff4d4d",
+    "security": "#b06bff",
+    "deprecated": "#8a8a94",
+}
+_CHANGELOG_COLORS_LIGHT = {
+    "added": "#17804a",
+    "changed": "#1a6fc2",
+    "fixed": "#a85400",
+    "removed": "#c62828",
+    "security": "#7a3fc7",
+    "deprecated": "#5c5c66",
+}
+
+
+def changelog_section_color(section: str, dark: bool) -> str | None:
+    """Colour for a changelog "### <Type>" heading, or None for unknown types."""
+    colors = _CHANGELOG_COLORS_DARK if dark else _CHANGELOG_COLORS_LIGHT
+    return colors.get(section.strip().lower())
+
+
+def sort_changelog_sections(md_text: str) -> str:
+    """Reorder the "### " sections inside each "## " release into
+    CHANGELOG_SECTION_ORDER at render time (unknown types keep their relative
+    order and go last). Text before a release's first "### " stays put; each
+    section moves as a whole, heading plus body."""
+    rank = {name: i for i, name in enumerate(CHANGELOG_SECTION_ORDER)}
+    out: list[str] = []
+    sections: list[tuple[str, list[str]]] | None = None
+
+    def flush() -> None:
+        nonlocal sections
+        if not sections:
+            sections = None
+            return
+        ordered = sorted(
+            enumerate(sections),
+            key=lambda item: (rank.get(item[1][0].strip().lower(), len(rank)), item[0]),
+        )
+        for _, (_, body) in ordered:
+            if out and out[-1].strip() and not re.match(r"#{1,2} ", out[-1]):
+                out.append("")
+            out.extend(body)
+        sections = None
+
+    for line in md_text.splitlines():
+        if re.match(r"#{1,2} ", line):
+            flush()
+            out.append(line)
+        elif line.startswith("### "):
+            if sections is None:
+                sections = []
+            sections.append((line[4:], [line]))
+        elif sections is not None:
+            sections[-1][1].append(line)
+        else:
+            out.append(line)
+    flush()
+    return "\n".join(out)

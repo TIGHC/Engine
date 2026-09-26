@@ -5,6 +5,29 @@ All notable changes to this project are documented here. Versioning follows
 mark breaking config-format/behavior changes, MINOR marks backward-compatible
 feature additions, PATCH marks fixes.
 
+## [6.3.6] - 2026-09-26
+
+### Changed
+- The About tab's changelog now sorts each release's `###` sections into
+  a fixed order at render time - Added, Changed, Fixed, Removed, Security,
+  Deprecated, with unknown types (e.g. "Breaking") last - and colours each
+  heading with the shared palette (Added green `#2ecc71`, Changed blue
+  `#3ba7ff`, Fixed orange `#ffa64d`, Removed red `#ff4d4d`, Security purple
+  `#b06bff`, Deprecated grey `#8a8a94`; darker shades on the light theme).
+- `gui.py`'s copyright notice changed from StuxieDev to Stux.Group.
+- CHANGELOG sections reordered to Added, Changed, Fixed, Removed, Security,
+  Deprecated.
+
+### Security
+- Profile ids fetched from the TIGHC Profiles repo are now validated
+  (letters, digits, `_` and `-` only) before being used as folder names or
+  URL path segments, so a malicious or malformed listing entry like `..`
+  can't escape the profiles folder or redirect a request. Covered by new
+  tests in `tests/test_profiles.py`.
+- `src/build/create_release_files.py` pins PyInstaller to `6.22.2` instead
+  of installing whatever the latest release is, keeping release builds
+  reproducible and never pulling in an unreviewed PyInstaller version.
+
 ## [6.3.5] - 2026-09-15
 
 ### Fixed
@@ -157,6 +180,13 @@ feature additions, PATCH marks fixes.
   than every actual file - rewrote it to exhaustively list the current
   file set.
 
+### Fixed
+- Rebuilding the Settings tab (the "Reset settings to defaults" button)
+  crashed with "Internal C++ object already deleted" -
+  `QScrollArea.setWidget()` already deletes whatever widget it
+  previously held; calling `deleteLater()` on that old body ourselves
+  afterward was a double-delete.
+
 ### Removed
 - **The SteamGridDB cover-art feature is gone entirely** - it no longer
   fits the project. Deleted `src/steamgriddb.py` and
@@ -167,13 +197,6 @@ feature additions, PATCH marks fixes.
   `ARTWORK_CACHE_DIR`; the Settings tab's "Cover art (SteamGridDB)"
   section, and the Profiles/Test tabs' cover-art thumbnails and picker
   dialogs, are gone along with it.
-
-### Fixed
-- Rebuilding the Settings tab (the "Reset settings to defaults" button)
-  crashed with "Internal C++ object already deleted" -
-  `QScrollArea.setWidget()` already deletes whatever widget it
-  previously held; calling `deleteLater()` on that old body ourselves
-  afterward was a double-delete.
 
 ## [5.3.3] - 2026-09-12
 
@@ -191,6 +214,15 @@ feature additions, PATCH marks fixes.
 
 ## [5.3.1] - 2026-09-10
 
+### Added
+- **`assets/icon.icns`**, so `scripts/build_exe.py` can now embed a proper
+  icon in macOS builds too (previously macOS/Linux builds shipped with no
+  icon at all, since only `icon.ico` existed for Windows). Generated from
+  the existing `icon.png` upscaled to 1024x1024 and written via Pillow's
+  ICNS support - contains the full standard Apple icon size set (16 through
+  512, with @2x variants), same as `iconutil` would produce. Same file,
+  byte-for-byte, in Profiles' `assets/` copy - see its changelog.
+
 ### Fixed
 - **Window title now reads "TIGHC (The Intiface Game Haptics Controller) —
   vX.Y.Z"** (was "TIGHC - The Intiface Game Haptics Controller (vX.Y.Z)")
@@ -201,15 +233,6 @@ feature additions, PATCH marks fixes.
   macOS) doesn't reliably replace it there - added `iconbitmap()` with
   `assets/icon.ico` on Windows specifically, which does. Verified against
   a real PyInstaller build's taskbar button, not just running from source.
-
-### Added
-- **`assets/icon.icns`**, so `scripts/build_exe.py` can now embed a proper
-  icon in macOS builds too (previously macOS/Linux builds shipped with no
-  icon at all, since only `icon.ico` existed for Windows). Generated from
-  the existing `icon.png` upscaled to 1024x1024 and written via Pillow's
-  ICNS support - contains the full standard Apple icon size set (16 through
-  512, with @2x variants), same as `iconutil` would produce. Same file,
-  byte-for-byte, in Profiles' `assets/` copy - see its changelog.
 
 ## [5.3.0] - 2026-09-10
 
@@ -417,6 +440,12 @@ feature additions, PATCH marks fixes.
 
 ## [5.0.2] - 2026-09-10
 
+### Changed
+- **"TIGHC-Profiles" renamed to "TIGHC Profiles"** (no hyphen) everywhere
+  it's used as a display name - `README.md`, and the "Restore from
+  GitHub..."/"Update profiles from GitHub" comments and confirmation
+  dialog text in `gui.py` - matching the correct project name.
+
 ### Fixed
 - **`LINUX_GUIDE.md`** still told Linux users to clone with
   `--recurse-submodules` and `cd TIGHC` - the `profiles/` submodule was
@@ -424,12 +453,6 @@ feature additions, PATCH marks fixes.
   launch instead), and the repo is named `Engine`, so a plain clone creates
   an `Engine/` directory, not `TIGHC/`. Now matches the main README's
   already-correct Quick start instructions.
-
-### Changed
-- **"TIGHC-Profiles" renamed to "TIGHC Profiles"** (no hyphen) everywhere
-  it's used as a display name - `README.md`, and the "Restore from
-  GitHub..."/"Update profiles from GitHub" comments and confirmation
-  dialog text in `gui.py` - matching the correct project name.
 
 ## [5.0.1] - 2026-09-10
 
@@ -445,14 +468,6 @@ feature additions, PATCH marks fixes.
   in Website's and Profiles' `assets/` copies - see their changelogs.
 
 ## [5.0.0] - 2026-09-10
-
-### Removed
-- **The headless CLI (`cli.py`, `tighc-cli.spec`)** - the GUI is now the only
-  entry point and the only executable a release builds/publishes. Breaking
-  for anyone scripting against `cli.py` or downloading a `TIGHC-CLI` /
-  `TIGHC-cli-...` release asset - those no longer exist. Every `src/`
-  module's re-exported facade (`src/tighc.py`) is unaffected; only the
-  headless entry point and its packaging are gone.
 
 ### Added
 - **macOS release builds** - `macos-latest` added to the CI build matrix
@@ -475,7 +490,19 @@ feature additions, PATCH marks fixes.
   per platform: `TIGHC-windows-vX.Y.Z.exe` / `TIGHC-linux-vX.Y.Z` /
   `TIGHC-macos-vX.Y.Z` (previously `TIGHC-gui-...`/`TIGHC-cli-...`).
 
+### Removed
+- **The headless CLI (`cli.py`, `tighc-cli.spec`)** - the GUI is now the only
+  entry point and the only executable a release builds/publishes. Breaking
+  for anyone scripting against `cli.py` or downloading a `TIGHC-CLI` /
+  `TIGHC-cli-...` release asset - those no longer exist. Every `src/`
+  module's re-exported facade (`src/tighc.py`) is unaffected; only the
+  headless entry point and its packaging are gone.
+
 ## [4.0.1] - 2026-09-08
+
+### Changed
+- `CHANGELOG.md` entries now carry a date next to each version (`## [x.y.z] - YYYY-MM-DD`), backfilled from each release's git tag, matching the Automater project's changelog format
+- `README.md`'s `## Author` block moved out from under the intro and replaced with a `## License` section and a "Built & Maintained by StuxieDev" footer line at the bottom, matching Automater's layout
 
 ### Fixed
 - `LICENSE.md` was a plain-text dump of GPLv3 (hard-wrapped lines, no
@@ -483,10 +510,6 @@ feature additions, PATCH marks fixes.
   Markdown transcription (gnu.org/licenses/gpl-3.0.md) - identical legal
   text, proper `#`/`##`/`###` headings and paragraph formatting, matching
   the same fix already applied to the Automater project's `LICENSE.md`
-
-### Changed
-- `CHANGELOG.md` entries now carry a date next to each version (`## [x.y.z] - YYYY-MM-DD`), backfilled from each release's git tag, matching the Automater project's changelog format
-- `README.md`'s `## Author` block moved out from under the intro and replaced with a `## License` section and a "Built & Maintained by StuxieDev" footer line at the bottom, matching Automater's layout
 
 ## [4.0.0] - 2026-09-07
 
@@ -986,22 +1009,6 @@ feature additions, PATCH marks fixes.
 
 Project layout reorganized so it's no longer ambiguous which file to run.
 
-### Changed
-- **Breaking:** `haptics.py` and `steamgriddb.py` are merged into a single
-  library module, `src/core.py`. Neither top-level file exists anymore.
-- **Breaking:** the headless CLI is now its own file, `cli.py` - run
-  `python cli.py` instead of `python haptics.py` to start the engine from
-  the terminal. `src/core.py` is purely a library (imported by both `cli.py`
-  and `gui.py`) and refuses to run directly - doing so now prints a pointer
-  to `cli.py`/`gui.py` instead of silently doing nothing or starting
-  anything unexpected.
-- **Breaking:** per-install runtime config/state (`haptics_config.json`,
-  `devices.json`, `steamgriddb_config.json`, `steamgriddb_cache.json`) now
-  lives under a `configs/` folder instead of the repo root. The folder is
-  created automatically on first run; existing installs should move their
-  files into `configs/` (or just let the app regenerate them with defaults).
-- `gui.py` is unchanged as the primary way to run TIGHC (`python gui.py`).
-
 ### Added
 - **Linux / Steam Deck Desktop Mode support**: `get_foreground_window_title()`
   was hardcoded to Win32 APIs, so profile auto-switching (and therefore the
@@ -1023,6 +1030,22 @@ Project layout reorganized so it's no longer ambiguous which file to run.
   no image override is set, or if a previously-pinned one is later removed
   from SteamGridDB (that case now falls back to the default and logs why,
   instead of just failing).
+
+### Changed
+- **Breaking:** `haptics.py` and `steamgriddb.py` are merged into a single
+  library module, `src/core.py`. Neither top-level file exists anymore.
+- **Breaking:** the headless CLI is now its own file, `cli.py` - run
+  `python cli.py` instead of `python haptics.py` to start the engine from
+  the terminal. `src/core.py` is purely a library (imported by both `cli.py`
+  and `gui.py`) and refuses to run directly - doing so now prints a pointer
+  to `cli.py`/`gui.py` instead of silently doing nothing or starting
+  anything unexpected.
+- **Breaking:** per-install runtime config/state (`haptics_config.json`,
+  `devices.json`, `steamgriddb_config.json`, `steamgriddb_cache.json`) now
+  lives under a `configs/` folder instead of the repo root. The folder is
+  created automatically on first run; existing installs should move their
+  files into `configs/` (or just let the app regenerate them with defaults).
+- `gui.py` is unchanged as the primary way to run TIGHC (`python gui.py`).
 
 ### Fixed
 - The 18+ age-gate dialog in `gui.py` could silently never appear on some
