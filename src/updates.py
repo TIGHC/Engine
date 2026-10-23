@@ -10,7 +10,7 @@ import urllib.request
 from typing import Optional
 
 from src.metadata import REPO_URL
-from src.version import get_version_tuple
+from src.version import get_version_tuple, parse_version
 
 TIGHC_VERSION_URL = "https://raw.githubusercontent.com/TIGHC/Engine/main/VERSION.md"
 
@@ -26,12 +26,8 @@ def _github_get(url: str, timeout: int = 8) -> Optional[bytes]:
 
 
 def _parse_version_tuple(text: str) -> Optional[tuple]:
-    """Parse a "X.Y.Z" string into an (int, int, int) tuple, or None if malformed."""
-    try:
-        major, minor, patch = text.strip().split(".")
-        return (int(major), int(minor), int(patch))
-    except (ValueError, AttributeError):
-        return None
+    """Parse "YY.MM.DD" or "YY.MM.DD-N" into a (YY, MM, DD, N) tuple, or None if malformed."""
+    return parse_version(text)
 
 
 def check_for_update(timeout: int = 8) -> Optional[dict]:
@@ -45,7 +41,7 @@ def check_for_update(timeout: int = 8) -> Optional[dict]:
 
     Returns None if the check fails (offline, rate-limited, malformed
     response) or the current version is already the latest. On an
-    available update, returns {"version": "X.Y.Z", "url": "<release URL>"}.
+    available update, returns {"version": "YY.MM.DD", "url": "<release URL>"}.
     """
     data = _github_get(TIGHC_VERSION_URL, timeout=timeout)
     if data is None:

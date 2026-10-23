@@ -1,9 +1,25 @@
 # Changelog
 
 All notable changes to this project are documented here. Versioning follows
-[Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`): MAJOR bumps
-mark breaking config-format/behavior changes, MINOR marks backward-compatible
-feature additions, PATCH marks fixes.
+[Date Versioning](https://datevers.ing) (`YY.MM.DD`, the UTC release date, with
+`-1`, `-2`... for later releases the same day).
+
+Releases before v26.10.23 used Semantic Versioning.
+
+## v26.10.23
+
+### Added
+
+- `tests/version.sh`, which checks that `VERSION.md` is a valid Date Version, a real calendar date not in the future, and the same as the newest entry in this changelog
+
+### Changed
+
+- Switched from Semantic Versioning to [Date Versioning](https://datevers.ing): releases are numbered by their UTC release date as `YY.MM.DD`, with `-1`, `-2`… for later releases the same day. This release follows v6.3.6
+- The update check and `get_version_tuple()` now understand Date Versions, including the `-N` suffix: the version tuple is `(YY, MM, DD, N)`.
+- The About tab's versioning note describes Date Versioning.
+- `README.md` no longer names the AI tools used while writing the code.
+- `commit.sh` and `commit.bat` refuse a `VERSION.md` that isn't a valid Date Version or is dated in the future (UTC), and warn when it's dated before today
+- `README.md` and `CONTRIBUTING.md` describe Date Versioning and the release steps
 
 ## [6.3.6] - 2026-09-26
 

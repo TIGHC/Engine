@@ -143,7 +143,7 @@ class AboutTab(QWidget):
             f'By using this software, you agree to the <a href="{terms_url}">Terms and Ethics of Use</a>.'
         ))
 
-        versioning = QLabel("Versioning: Semantic Versioning (semver.org) - MAJOR.MINOR.PATCH.")
+        versioning = QLabel("Versioning: Date Versioning (datevers.ing) - YY.MM.DD, the UTC release date.")
         versioning.setProperty("hint", "true")
         layout.addWidget(versioning)
 

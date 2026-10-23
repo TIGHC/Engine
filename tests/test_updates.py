@@ -9,12 +9,12 @@ from src import updates
 
 
 def test_parse_version_tuple_valid():
-    assert updates._parse_version_tuple("5.2.1") == (5, 2, 1)
-    assert updates._parse_version_tuple(" 5.2.1 \n") == (5, 2, 1)
+    assert updates._parse_version_tuple("26.10.23") == (26, 10, 23, 0)
+    assert updates._parse_version_tuple(" 26.10.23-2 \n") == (26, 10, 23, 2)
 
 
 def test_parse_version_tuple_rejects_malformed_input():
-    for bad in ("5.2", "5.2.1.0", "vX.Y.Z", "", "5.2.x"):
+    for bad in ("26.10", "26.10.23.1", "vYY.MM.DD", "", "26.10.xx", "26.13.01", "26.10.23-0"):
         assert updates._parse_version_tuple(bad) is None
 
 
@@ -29,23 +29,23 @@ def test_check_for_update_returns_none_on_malformed_remote_version(monkeypatch):
 
 
 def test_check_for_update_returns_none_when_remote_is_not_newer(monkeypatch):
-    monkeypatch.setattr(updates, "get_version_tuple", lambda: (5, 2, 1))
-    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"5.2.1")
+    monkeypatch.setattr(updates, "get_version_tuple", lambda: (26, 10, 23, 0))
+    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"26.10.23")
     assert updates.check_for_update() is None
 
-    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"5.2.0")
+    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"26.10.22")
     assert updates.check_for_update() is None
 
 
 def test_check_for_update_returns_details_when_remote_is_newer(monkeypatch):
-    monkeypatch.setattr(updates, "get_version_tuple", lambda: (5, 2, 1))
-    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"5.3.0\n")
+    monkeypatch.setattr(updates, "get_version_tuple", lambda: (26, 10, 23, 0))
+    monkeypatch.setattr(updates, "_github_get", lambda url, timeout=8: b"26.10.23-1\n")
 
     result = updates.check_for_update()
 
     assert result == {
-        "version": "5.3.0",
-        "url": "https://github.com/TIGHC/Engine/releases/tag/v5.3.0",
+        "version": "26.10.23-1",
+        "url": "https://github.com/TIGHC/Engine/releases/tag/v26.10.23-1",
     }
 
 

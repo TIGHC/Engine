@@ -9,14 +9,14 @@
 > for use only by adults aged 18 or older. `gui.py` requires you to confirm
 > this before it'll start.
 
-**Version 6.3.4** — see [CHANGELOG.md](CHANGELOG.md) for release history.
+**Version 26.10.23** — see [CHANGELOG.md](CHANGELOG.md) for release history.
 
 Haptic feedback for your games, driven by the keys you're already pressing.
 
 TIGHC links your keyboard/mouse input to a Buttplug/Intiface toy. Sneak,
 sprint, attack, jump — each action can drive its own motor, at its own
-intensity, per game. As much as I hate to say it this was made with grok,
-chat gpt, and some claude. (I wish I was better at coding)
+intensity, per game. As much as I hate to say it, this was made with a lot of AI
+assistance. (I wish I was better at coding)
 
 Website: https://tighc.stuxie.dev  
 Repository: https://github.com/TIGHC/Engine  
@@ -112,7 +112,7 @@ assets/
 tests/                        # pytest suite - see "Development" below
 pyproject.toml                # project metadata/dependencies + pytest config
 requirements.txt               # runtime dependencies (same list as pyproject.toml's)
-CHANGELOG.md / VERSION.md      # release history + current version (semver)
+CHANGELOG.md / VERSION.md      # release history + current version (Date Versioning)
 CONTRIBUTING.md                # how to contribute a change
 LICENSE.md                     # GPL-3.0-or-later
 commit.sh / commit.bat         # commit + tag a release, reading the version from VERSION.md
@@ -256,14 +256,9 @@ anything under `src/` is imported, so running `pytest` is always safe on a
 machine that already has TIGHC configured. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for what's expected of a pull request.
 
-## About, versioning, and contact
+## Versioning
 
-The GUI's **About** tab shows the current version, a short project summary,
-the versioning scheme, the changelog, and a link to the repository. This
-project follows [Semantic Versioning](https://semver.org/)
-(`MAJOR.MINOR.PATCH`) - see [CHANGELOG.md](CHANGELOG.md) for what changed in
-each release. Questions, issues, or contributions:
-https://github.com/TIGHC/Engine
+This project uses [Date Versioning](https://datevers.ing): each release is numbered by its UTC release date as `YY.MM.DD` (for example `26.10.23`), with `-1`, `-2`… for later releases the same day. See [CHANGELOG.md](CHANGELOG.md) for what changed in each release.
 
 ## License
 
